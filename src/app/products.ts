@@ -1,0 +1,208 @@
+ 
+ export const products = [
+  {
+    id: 1,
+    name: "Office pen 6pcs/pk",
+    description: "Noise-canceling over-ear headphones with 30-hour battery life.",
+    price: 120.99,
+    category: "toiletories",
+    stock: 50,
+    rating: 4.7,
+    availability: "In stock",
+    imageUrls: [
+      '/assets/images/sticks.png',
+    '/assets/images/sticks.png',
+    '/assets/images/sticks.png',
+    '/assets/images/sticks.png'
+    ],
+    type: "Accessory",
+  },
+  {
+    id: 2,
+    name: "Men's Running Shoes",
+    description: "Lightweight, breathable running shoes with durable soles.",
+    price: 75.49,
+    category: "Fashion",
+    stock: 80,
+    availability: "Available now",
+    rating: 4.5,
+    imageUrls: [
+     '/assets/images/book.png',
+    '/assets/images/book.png',
+    '/assets/images/book.png',
+    '/assets/images/book.png'
+    ],
+    type: "Footwear",
+  },
+  {
+    id: 3,
+    name: "Stainless Steel Water Bottle",
+    description: "Eco-friendly, BPA-free, and insulated water bottle.",
+    price: 25.99,
+    category: "Home & Kitchen",
+    stock: 200,
+    rating: 4.8,
+    availability: "In stock",
+    imageUrls: [
+      '/assets/images/fanta.png',
+    '/assets/images/fanta.png',
+    '/assets/images/fanta.png',
+    '/assets/images/fanta.png'
+    ],
+    type: "Kitchenware",
+  },
+  {
+    id: 4,
+    name: "Smartphone with AMOLED Display",
+    description: "High-performance smartphone with 128GB storage and 5G support.",
+    price: 699.99,
+    category: "Electronics",
+    availability: "Available now",
+    stock: 30,
+    rating: 4.9,
+    imageUrls: [
+      '/assets/images/book.png',
+     '/assets/images/book.png',
+     '/assets/images/book.png',
+     '/assets/images/book.png'
+     ],
+    type: "Gadget",
+  },
+   
+  {
+    id: 5,
+    name: "Men's Running Shoes",
+    description: "Lightweight, breathable running shoes with durable soles.",
+    price: 75.49,
+    category: "Fashion",
+    stock: 80,
+    availability: "Available now",
+    rating: 4.5,
+    imageUrls: [
+     '/assets/images/fanta.png',
+    '/assets/images/fanta.png',
+    '/assets/images/fanta.png',
+    '/assets/images/fanta.png'
+    ],
+    type: "Footwear",
+  },
+  {
+    id: 6,
+    name: "Stainless Steel Water Bottle",
+    description: "Eco-friendly, BPA-free, and insulated water bottle.",
+    price: 25.99,
+    category: "Home & Kitchen",
+    stock: 200,
+    rating: 4.8,
+    availability: "In stock",
+    imageUrls: [
+      '/assets/images/book.png',
+     '/assets/images/book.png',
+     '/assets/images/book.png',
+     '/assets/images/book.png'
+     ],
+    type: "Kitchenware",
+  },
+  {
+    id: 7,
+    name: "Smartphone with AMOLED Display",
+    description: "High-performance smartphone with 128GB storage and 5G support.",
+    price: 699.99,
+    category: "Electronics",
+    availability: "Available now",
+    stock: 30,
+    rating: 4.9,
+    imageUrls: [
+      '/assets/images/fanta.png',
+    '/assets/images/fanta.png',
+    '/assets/images/fanta.png',
+    '/assets/images/fanta.png'
+    ],
+    type: "Gadget",
+  },
+  {
+    id: 8,
+    name: "Comfortable Office Chair",
+    description: "Ergonomic chair with lumbar support and adjustable height.",
+    price: 149.99,
+    category: "Furniture",
+    availability: "In stock",
+    stock: 20,
+    rating: 4.6,
+    imageUrls: [
+      '/assets/images/sticks.png',
+    '/assets/images/sticks.png',
+    '/assets/images/sticks.png',
+    '/assets/images/sticks.png'
+    ],
+    type: "Furniture",
+  },
+  {
+    id: 9,
+    name: "Stainless Steel Water Bottle",
+    description: "Eco-friendly, BPA-free, and insulated water bottle.",
+    price: 25.99,
+    category: "Home & Kitchen",
+    stock: 200,
+    rating: 4.8,
+    availability: "In stock",
+    imageUrls: [
+      '/assets/images/book.png',
+     '/assets/images/book.png',
+     '/assets/images/book.png',
+     '/assets/images/book.png'
+     ],
+    type: "Kitchenware",
+  },
+  {
+    id: 10,
+    name: "Smartphone with AMOLED Display",
+    description: "High-performance smartphone with 128GB storage and 5G support.",
+    price: 699.99,
+    category: "Electronics",
+    availability: "Available now",
+    stock: 30,
+    rating: 4.9,
+    imageUrls: [
+      '/assets/images/fanta.png',
+    '/assets/images/fanta.png',
+    '/assets/images/fanta.png',
+    '/assets/images/fanta.png'
+    ],
+    type: "Gadget",
+  },
+  {
+    id: 11,
+    name: "Comfortable Office Chair",
+    description: "Ergonomic chair with lumbar support and adjustable height.",
+    price: 149.99,
+    category: "Furniture",
+    availability: "In stock",
+    stock: 20,
+    rating: 4.6,
+    imageUrls: [
+      '/assets/images/sticks.png',
+    '/assets/images/sticks.png',
+    '/assets/images/sticks.png',
+    '/assets/images/sticks.png'
+    ],
+    type: "Furniture",
+  },
+  {
+    id: 12,
+    name: "Comfortable Office Chair",
+    description: "Ergonomic chair with lumbar support and adjustable height.",
+    price: 149.99,
+    category: "Furniture",
+    availability: "In stock",
+    stock: 20,
+    rating: 4.6,
+    imageUrls: [
+      '/assets/images/book.png',
+     '/assets/images/book.png',
+     '/assets/images/book.png',
+     '/assets/images/book.png'
+     ],
+    type: "Furniture",
+  },
+];

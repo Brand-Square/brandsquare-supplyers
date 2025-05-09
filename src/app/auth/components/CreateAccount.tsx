@@ -96,7 +96,7 @@ const CreateAccount = () => {
         businessName: values.companyName,
         email: values.email,
         password: values.password,
-        userType: "vendor",
+        userType: "supplier",
         acceptedTOS: values.acceptTerms,
       })
         .then(() => {

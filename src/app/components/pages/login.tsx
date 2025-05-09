@@ -57,10 +57,10 @@ const Login = () => {
       console.log({
         email: values.email,
         password: values.password,
-        userType: "vendor",
+        userType: "supplier",
       });
       login(
-        { email: values.email, password: values.password, userType: "vendor" },
+        { email: values.email, password: values.password, userType: "supplier" },
         router
       );
     },

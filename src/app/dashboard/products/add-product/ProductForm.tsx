@@ -277,7 +277,7 @@ export function ProductForm() {
         stock: Number(inputValues.totalStock),
         setOutOfStockAtminimum: true,
         freeShipping: true,
-        avialability: "customers",
+        avialability: "vendors",
         categories: selectedCategories.map((cat) => cat._id),
         images: variantImageResponseData.productImages,
         variants: {

@@ -7,7 +7,7 @@ import { SupportModals } from "../../../../components/modals/SupportModals";
 import { StatsCard } from "../../../../components/ui/StatsCard";
 import PaymentIcon from "../../../../../public/assets/icons/paymentIcon";
 import { useRouter } from "next/navigation";
-import { OrdersTable } from "../../orders/brandsquare-orders/OrdersTable";
+import { OrdersTable } from "./index";
 
 const OrdersPage = () => {
   const router = useRouter();

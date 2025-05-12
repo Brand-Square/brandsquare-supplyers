@@ -22,6 +22,8 @@ import { VariantsSectionInputs } from "./VariantsSectionInputs";
 import { SubmitButton } from "../SubmitButton";
 import { toast } from "sonner";
 import { generateCombinations, generateCombinationsImage } from "./helper";
+// NEW: Import axios for API calls
+import axios from "axios";
 // import { SizeVariant } from "../SizeVariants";
 
 const basicInfos = {
@@ -47,6 +49,9 @@ export function ProductForm() {
   const [selectedRows, setSelectedRows] = React.useState<number[]>([]);
   const [selectedColors, setSelectedColors] = React.useState<Color[]>([]);
   const [imagePreviews, setImagePreviews] = React.useState<string[] | []>([]);
+  // NEW: State for exchange rate and converted price
+  const [exchangeRate, setExchangeRate] = React.useState<number | null>(null);
+  const [convertedPrice, setConvertedPrice] = React.useState<number | null>(null);
 
   const [variantFields, setVariantFields] = React.useState<VariantField[]>([]);
 
@@ -56,6 +61,41 @@ export function ProductForm() {
   }));
 
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+
+  // NEW: Fetch exchange rate on component mount
+  React.useEffect(() => {
+    const fetchExchangeRate = async () => {
+      try {
+        // Replace with your ExchangeRate-API key
+        const apiKey = "9544e1e41794dfbe156947c3";
+        const response = await axios.get(
+          `https://v6.exchangerate-api.com/v6/${apiKey}/latest/CNY`
+        );
+        const rate = response.data.conversion_rates.NGN;
+        setExchangeRate(rate);
+      } catch (error) {
+        console.error("Error fetching exchange rate:", error);
+        toast.error("Failed to fetch exchange rate. Using default rate.");
+        setExchangeRate(200); // Fallback rate (adjust as needed)
+      }
+    };
+    fetchExchangeRate();
+  }, []);
+
+  // NEW: Update converted price whenever price input or exchange rate changes
+  React.useEffect(() => {
+    if (exchangeRate && inputValues.price) {
+      const priceInYuan = parseFloat(inputValues.price);
+      if (!isNaN(priceInYuan)) {
+        const priceInNaira = priceInYuan * exchangeRate;
+        setConvertedPrice(parseFloat(priceInNaira.toFixed(2)));
+      } else {
+        setConvertedPrice(null);
+      }
+    } else {
+      setConvertedPrice(null);
+    }
+  }, [inputValues.price, exchangeRate]);
 
   function updateBasicInfo(updatedValues: Partial<BasicInfo>) {
     setInputValues((prev) => ({
@@ -85,8 +125,23 @@ export function ProductForm() {
       const newData = [...prev];
       const item = { ...newData[parentIndex].values[index] };
 
-      if (type === "price") item.variantPrice = value;
-      else item.variantStock = value;
+      if (type === "price") {
+        item.variantPrice = value;
+        if (exchangeRate) {
+          const convertedVariantPrice = value * exchangeRate;
+          console.log(
+            `Variant [${newData[parentIndex].name}, value: ${
+              item.label
+            }]: Price in CNY = ${value}, Price in NGN = ${convertedVariantPrice.toFixed(2)}`
+          );
+        } else {
+          console.log(
+            `Variant [${newData[parentIndex].name}, value: ${item.label}]: Price in CNY = ${value}, NGN conversion unavailable (exchange rate not loaded)`
+          );
+        }
+      } else {
+        item.variantStock = value;
+      }
 
       newData[parentIndex].values[index] = item;
       return newData;
@@ -184,11 +239,19 @@ export function ProductForm() {
     setProductImages([]);
     setVariantFields([]);
     setImagePreviews([]);
+    // NEW: Reset converted price
+    setConvertedPrice(null);
   }
 
   // ADD PRODUCTS REQUEST
   async function addProduct(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+
+    // NEW: Prevent submission if exchange rate is unavailable
+    if (!exchangeRate) {
+      toast.error("Cannot submit: Exchange rate unavailable.");
+      return;
+    }
 
     const discount: Discount = {
       discountType: "amount",
@@ -257,7 +320,16 @@ export function ProductForm() {
         }));
 
       const variantCombinations = generateCombinations(
-        cleanedVariants,
+        // MODIFIED: Convert variant prices to NGN in cleanedVariants
+        cleanedVariants.map((variant) => ({
+          ...variant,
+          values: variant.values.map((value) => ({
+            ...value,
+            variantPrice: value.variantPrice
+              ? Number((value.variantPrice * exchangeRate).toFixed(2))
+              : value.variantPrice,
+          })),
+        })),
         variantImageResponseData.variantCombinations
       );
 
@@ -269,7 +341,8 @@ export function ProductForm() {
       const formData: Product = {
         name: inputValues.name,
         description: inputValues.desc,
-        price: Number(inputValues.price),
+        // NEW: Use converted price in NGN
+        price: convertedPrice || Number(inputValues.price),
         discount,
         packSize: inputValues.packsize,
         packQuantity: Number(inputValues.packQuantity),
@@ -309,6 +382,9 @@ export function ProductForm() {
           setSelectedCategories={setSelectedCategories}
           values={inputValues}
           onChange={updateBasicInfo}
+          // NEW: Pass exchangeRate and convertedPrice for price input
+          exchangeRate={exchangeRate}
+          convertedPrice={convertedPrice}
         />
 
         {/* PRODUCT IMAGES */}

@@ -17,6 +17,9 @@ type BasicInfoSectionProps = {
   onChange: (updatedValues: Partial<BasicInfo>) => void;
   selectedCategories: Category[];
   setSelectedCategories: React.Dispatch<React.SetStateAction<Category[]>>;
+  // NEW: Props for exchange rate and converted price
+  exchangeRate: number | null;
+  convertedPrice: number | null;
 };
 
 export function BasicInfoSection({
@@ -24,8 +27,30 @@ export function BasicInfoSection({
   onChange,
   selectedCategories,
   setSelectedCategories,
+  // NEW: Destructure new props
+  exchangeRate,
+  convertedPrice,
 }: BasicInfoSectionProps) {
   const { data } = useGetCategories(1000);
+
+  // NEW: Handle price input change with console logging
+  const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    onChange({ price: value });
+    const priceInYuan = parseFloat(value);
+    if (!isNaN(priceInYuan) && exchangeRate) {
+      const priceInNaira = priceInYuan * exchangeRate;
+      console.log(
+        `Main Product: Price in CNY = ${priceInYuan}, Price in NGN = ${priceInNaira.toFixed(2)}`
+      );
+    } else {
+      console.log(
+        `Main Product: Price in CNY = ${value || "N/A"}, NGN conversion unavailable (${
+          exchangeRate ? "invalid input" : "exchange rate not loaded"
+        })`
+      );
+    }
+  };
 
   return (
     <div className="space-y-3">
@@ -51,15 +76,24 @@ export function BasicInfoSection({
       </div>
       <div className="grid grid-cols-2 gap-x-4">
         <div className="space-y-1">
-          <Label htmlFor="price">Price*</Label>
-          <Input
-            id="price"
-            required
-            value={values.price}
-            onChange={(e) => onChange({ price: e.target.value })}
-            type="number"
-            placeholder="NGN"
-          />
+          {/* MODIFIED: Update label and input for CNY with NGN suffix */}
+          <Label htmlFor="price">Price in Yuan (CNY)*</Label>
+          <div className="relative">
+            <Input
+              id="price"
+              required
+              value={values.price}
+              onChange={handlePriceChange}
+              type="number"
+              placeholder="CNY"
+              className="pr-24" // Add padding to accommodate suffix
+            />
+            <span
+              className="absolute inset-y-0 right-2 flex items-center text-sm text-gray-500 pointer-events-none"
+            >
+              {convertedPrice ? `₦${convertedPrice.toFixed(2)}` : "N/A"}
+            </span>
+          </div>
         </div>
         <div className="space-y-1">
           <Label htmlFor="Discount">Discount</Label>

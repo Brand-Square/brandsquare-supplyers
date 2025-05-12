@@ -32,18 +32,12 @@ export default function DesktopHome() {
                 Welcome to Brandsquare Suppliers Hub
               </h1>
               <p className="text-muted-foreground font-dm-sans">
-                At Brandsquare, we understand the challenges small businesses
-                face: limited access to quality products, high upfront costs,
-                and the struggle to manage operations efficiently. That&apos;s why we
-                created the Suppliers Hub—a one-stop solution designed to empower
-                Suppliers like you. with as little as 50% capital. The Suppliers Hub
-                is your go-to destination for building a thriving business
-                without any stress.
+                Partner with us to bring your products to one of Africa&apos;s most active e-commerce markets. Brandsquare connects trusted Chinese suppliers directly with verified vendors across Nigeria, offering a secure and scalable partnership where your products get the exposure, reliability, and logistics support they need to thrive.
               </p>
               {isAuthenticated ? (
                 <Link href="/dashboard">
                   <Button className="bg-[#000051] mt-[30px] hover:bg-[#1a1b5e]/90 py-[1.5rem] text-white flex gap-2 items-center">
-                    Continue to Dashboard
+                    Become a Supplier
                     <span>
                       <ChevronRightIcon color="#ffffff" />
                     </span>
@@ -76,17 +70,12 @@ export default function DesktopHome() {
         <section className="py-8">
           <div className="container mx-auto">
             <h2 className="text-[48px] font-[900] tracking-tight font-dm-sans ">
-              Start with Just 50% Capital
+              Why Chinese Factories Choose Brandsquare
             </h2>
             <div className="flex items-center bg-white rounded-xl shadow-md border px-[56px]">
               <div className="flex-1 space-y-4">
                 <p className="text-muted-foreground font-dm-sans">
-                  You can kickstart your business with only 50% advance payment
-                  of the required capital. Imagine launching your dream
-                  business, tapping into your passion, and making a meaningful
-                  impact—all while managing your finances wisely. Order bulk
-                  products with just half upfront and pay the balance when you
-                  receive your orders.
+                  Chinese manufacturers choose Brandsquare because we provide secure and predictable trade. With 40% of the order value paid upfront and full balance settled upon delivery confirmation, you can produce and ship with confidence. Our vendor network ensures steady product demand, and our in-market knowledge helps your products succeed locally. From marketing to logistics, we handle the complex side—so you can focus on production.
                 </p>
                 {isAuthenticated ? (
                   <Link href="/dashboard">
@@ -120,6 +109,51 @@ export default function DesktopHome() {
             </div>
           </div>
         </section>
+
+
+        <section className="py-8">
+          <div className="container mx-auto">
+            <h2 className="text-[48px] font-[900] tracking-tight font-dm-sans ">
+              What You’ll Gain With Brandsquare
+            </h2>
+            <div className="flex flex-row-reverse items-center bg-white rounded-xl shadow-md border px-[56px]">
+              <div className="flex-1 space-y-4">
+                <p className="text-muted-foreground font-dm-sans">
+                  When you join our supplier network, you get more than orders. You gain a trusted channel into the Nigerian market. We offer access to high-demand vendors, structured order cycles, and promotional support. Your products are marketed across platforms while our logistics team ensures seamless delivery from factory to warehouse. It’s a simple, scalable way to grow beyond borders.
+                </p>
+                {isAuthenticated ? (
+                  <Link href="/dashboard">
+                    <Button className="bg-[#000051] mt-[30px] hover:bg-[#1a1b5e]/90 py-[1.5rem] text-white flex gap-2 items-center">
+                      Continue to Dashboard
+                      <span>
+                        <ChevronRightIcon color="#ffffff" />
+                      </span>
+                    </Button>
+                  </Link>
+                ) : (
+                  <Link href="/auth/create-account">
+                    <Button className="bg-[#000051] mt-[30px] hover:bg-[#1a1b5e]/90 py-[1.5rem] text-white flex gap-2 items-center">
+                      Become a Supplier
+                      <span>
+                        <ChevronRightIcon color="#ffffff" />
+                      </span>
+                    </Button>
+                  </Link>
+                )}
+              </div>
+              <div className="flex-1 flex items-center justify-center">
+                <Image
+                  src="/assets/svg/ma1.svg"
+                  alt="Smiling Man"
+                  width={878}
+                  height={479}
+                  className="object-contain rounded-xl"
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+
 
         {/* Why Choose Section */}
         <section id="why-choose" className="py-8">
@@ -181,7 +215,7 @@ export default function DesktopHome() {
               <div className="bg-[#000051] flex  items-center px-[76px] gap-8 rounded-xl py-[56px] text-white">
                 <div className="flex-1">
                   <h3 className="text-[32px] font-dm-sans font-[600] mb-4">
-                    Hassle-Free Logistics: 
+                    Hassle-Free Logistics:
                   </h3>
                   <p className="mb-4">
                     We take the stress out of logistics so you can focus on what
@@ -225,7 +259,7 @@ export default function DesktopHome() {
               <div className="bg-[#000051] flex flex-row-reverse items-center px-[76px] gap-8 rounded-xl py-[56px] text-white">
                 <div className="flex-1">
                   <h3 className="text-[32px] font-dm-sans font-[600] mb-4">
-                    Your Own Online Store: 
+                    Your Own Online Store:
                   </h3>
                   <p className="mb-4">
                     With Brandsquare&apos;s Suppliers &apos; Hub, you can create
@@ -554,13 +588,10 @@ export default function DesktopHome() {
                     className="border rounded-lg px-4"
                   >
                     <AccordionTrigger className="text-base font-medium py-4">
-                      What is the Brandsquare Supplier Hub?
+                      What kind of suppliers do you work with?
                     </AccordionTrigger>
                     <AccordionContent className="pb-4 text-muted-foreground">
-                      The Brandsquare Supplier Hub is a comprehensive platform
-                      designed to help product Suppliers in Africa grow their
-                      businesses by providing access to affordable products,
-                      logistics solutions, and online selling tools.
+                      We work with Chinese factories or sourcing companies that can handle consistent production, maintain quality standards, and support export-ready processes.
                     </AccordionContent>
                   </AccordionItem>
 
@@ -569,13 +600,10 @@ export default function DesktopHome() {
                     className="border rounded-lg px-4"
                   >
                     <AccordionTrigger className="text-base font-medium py-4">
-                      How do I start selling on Brandsquare?
+                      How do payments work?
                     </AccordionTrigger>
                     <AccordionContent className="pb-4 text-muted-foreground">
-                      To start selling on Brandsquare, simply sign up for a
-                      Supplier account, complete your profile, and start listing
-                      your products. Our team will guide you through the entire
-                      process.
+                      You’ll receive 40% of the total order value upfront. The balance (60%) is paid after the goods arrive at our warehouse and pass basic inspection.
                     </AccordionContent>
                   </AccordionItem>
 
@@ -584,13 +612,10 @@ export default function DesktopHome() {
                     className="border rounded-lg px-4"
                   >
                     <AccordionTrigger className="text-base font-medium py-4">
-                      How do I pay for goods from Chinese Suppliers?
+                      Who handles logistics?
                     </AccordionTrigger>
                     <AccordionContent className="pb-4 text-muted-foreground">
-                      Brandsquare handles all payments to international
-                      suppliers. You only need to pay us directly, and
-                      we&apos;ll manage the rest, including currency exchange
-                      and international transfers.
+                      We do Our logistics team manages shipping from China to Nigeria and ensures safe delivery through our fulfillment network.
                     </AccordionContent>
                   </AccordionItem>
 
@@ -599,13 +624,34 @@ export default function DesktopHome() {
                     className="border rounded-lg px-4"
                   >
                     <AccordionTrigger className="text-base font-medium py-4">
-                      How does the 50% capital option work?
+                      How do I know which products you need?
                     </AccordionTrigger>
                     <AccordionContent className="pb-4 text-muted-foreground">
-                      Our 50% capital option allows you to start your business
-                      by paying only half of the required capital upfront. The
-                      remaining balance can be paid after you&apos;ve started
-                      selling and generating revenue.
+                      Once you’re onboarded, we’ll guide you based on market demand, seasonality, and product performance insights.
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem
+                    value="item-4"
+                    className="border rounded-lg px-4"
+                  >
+                    <AccordionTrigger className="text-base font-medium py-4">
+                      What if I don’t speak English?
+                    </AccordionTrigger>
+                    <AccordionContent className="pb-4 text-muted-foreground">
+                      You can work through a bilingual representative or trading partner who can help communicate clearly with our team.
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem
+                    value="item-4"
+                    className="border rounded-lg px-4"
+                  >
+                    <AccordionTrigger className="text-base font-medium py-4">
+                      Can I work with you if I don’t have certifications?
+                    </AccordionTrigger>
+                    <AccordionContent className="pb-4 text-muted-foreground">
+                      We prioritize factories that meet quality standards. However, if your products meet our criteria but lack formal certificates, we’ll assess your case individually.
                     </AccordionContent>
                   </AccordionItem>
                 </Accordion>

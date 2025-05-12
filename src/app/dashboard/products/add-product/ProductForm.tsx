@@ -76,7 +76,7 @@ export function ProductForm() {
       } catch (error) {
         console.error("Error fetching exchange rate:", error);
         toast.error("Failed to fetch exchange rate. Using default rate.");
-        setExchangeRate(200); // Fallback rate (adjust as needed)
+        setExchangeRate(221); 
       }
     };
     fetchExchangeRate();

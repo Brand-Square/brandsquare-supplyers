@@ -36,9 +36,6 @@ const DesktopNav = () => {
           <Link href="#features" className="text-lg font-medium">
             Features
           </Link>
-          <Link href="#faqs" className="text-lg font-medium">
-            FAQs
-          </Link>
           <Link href="#contact" className="text-lg font-medium">
             Contact
           </Link>

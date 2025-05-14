@@ -1,14 +1,9 @@
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import ChevronRightIcon from "../../../../public/assets/icons/chevronRightIcon";
 import useInitAuthStore from "@/app/store/InitAuthStore";
 import { Button } from "@/components/ui/button";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
 import MobileNav from "../ui/navigation/MobileNav";
 import MobileFooter from "../ui/MobileFooter";
 import { Textarea } from "@/components/ui/textarea";
@@ -43,6 +38,37 @@ const content = [
 
 export default function MobileHome() {
   const { isAuthenticated } = useInitAuthStore();
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  const renderAuthButton = () => {
+    if (!isClient) return null;
+
+    const token = localStorage.getItem('token');
+    const isSignedIn = isAuthenticated || !!token;
+
+    if (isSignedIn) {
+      return (
+        <Link href="/dashboard" className="[&>button]:w-full">
+          <Button className="py-6 lg:py-8 text-lg lg:text-xl w-full">
+            Continue to Dashboard
+          </Button>
+        </Link>
+      );
+    } else {
+      return (
+        <Link href="/auth/create-account" className="[&>button]:w-full">
+          <Button className="py-6 lg:py-8 text-lg lg:text-xl w-full">
+            Sign Up as a supplier
+          </Button>
+        </Link>
+      );
+    }
+  };
+
   return (
     <div className="flex min-h-screen flex-col">
       <MobileNav />
@@ -59,16 +85,7 @@ export default function MobileHome() {
                 Tap into Nigeria&apos;s booming market with guaranteed orders, reliable logistics, and full market support.
               </p>
               <div className="mt-6 flex flex-col space-y-4">
-                <Link href='/auth/login' className="[&>button]:w-full">
-                  <Button className="py-4 text-base w-full">
-                    Sign Up as a supplier
-                  </Button>
-                </Link>
-                <Link href='#faqs' className="[&>button]:w-full">
-                  <Button className="bg-[#D9D9D9] text-[#000051] border-[3px] border-[#000051] py-4 text-base hover:bg-[#000051] hover:text-white w-full">
-                    Learn More
-                  </Button>
-                </Link>
+                {renderAuthButton()}               
               </div>
             </div>
             <div className="order-1 w-full relative">
@@ -144,9 +161,7 @@ export default function MobileHome() {
                   </div>
                 ))}
               </div>
-              <Button className="bg-[#fff] text-[#000051] border-[#000051] py-4 px-8 text-base hover:bg-[#000051] hover:text-white">
-                Sign up as a supplier
-              </Button>
+              {renderAuthButton()}
             </div>
           </div>
         </section>
@@ -210,59 +225,6 @@ export default function MobileHome() {
           </div>
         </section>
 
-        {/* FAQ Section - Mobile Restructured */}
-        <section id="faqs" className="py-8 px-4">
-          <div className="container mx-auto">
-            <div className="shadow-md py-6 px-4 rounded-md">
-              <h2 className="text-2xl font-bold text-center mb-6">
-                Frequently Asked Questions
-              </h2>
-              <Accordion type="single" collapsible className="space-y-4">
-                {[
-                  {
-                    question: "What kind of suppliers do you work with?",
-                    answer: "We work with Chinese factories or sourcing companies that can handle consistent production, maintain quality standards, and support export-ready processes."
-                  },
-                  {
-                    question: "How do payments work?",
-                    answer: "You'll receive 40% of the total order value upfront. The balance (60%) is paid after the goods arrive at our warehouse and pass basic inspection."
-                  },
-                  {
-                    question: "Who handles logistics?",
-                    answer: "We do Our logistics team manages shipping from China to Nigeria and ensures safe delivery through our fulfillment network."
-                  },
-                  {
-                    question: "How do I know which products you need?",
-                    answer: "Once you're onboarded, we'll guide you based on market demand, seasonality, and product performance insights."
-                  },
-                  {
-                    question: "What if I don't speak English?",
-                    answer: "You can work through a bilingual representative or trading partner who can help communicate clearly with our team."
-                  },
-                  {
-                    question: "Can I work with you if I don't have certifications?",
-                    answer: "We prioritize factories that meet quality standards. However, if your products meet our criteria but lack formal certificates, we'll assess your case individually."
-                  }
-                ].map((item, index) => (
-                  <AccordionItem key={index} value={`item-${index}`} className="border rounded-lg px-4">
-                    <AccordionTrigger className="text-sm font-medium py-3">
-                      {item.question}
-                    </AccordionTrigger>
-                    <AccordionContent className="pb-3 text-sm text-gray-600">
-                      {item.answer}
-                    </AccordionContent>
-                  </AccordionItem>
-                ))}
-              </Accordion>
-              <div className="mt-6 flex justify-center">
-                <Button className="bg-[#000051] hover:bg-[#1a1b5e]/90 py-3 text-white flex items-center gap-2">
-                  View More FAQs
-                  <ChevronRightIcon color="#ffffff" />
-                </Button>
-              </div>
-            </div>
-          </div>
-        </section>
 
         {/* Contact Section - Mobile Restructured */}
         <section id="contact" className="py-6 px-4">

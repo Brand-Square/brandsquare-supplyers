@@ -12,7 +12,6 @@ const links = [
   { title: "Home", href: "/" },
   { title: "Why choose us", href: "#why-choose" },
   { title: "Features", href: "#features" },
-  { title: "FAQs", href: "#faqs" },
   { title: "Contact", href: "#contact" },
 ];
 

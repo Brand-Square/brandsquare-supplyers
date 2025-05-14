@@ -6,7 +6,7 @@ import HomeIcon from "../../../../public/assets/icons/homeIcon";
 import { Wallet } from "lucide-react";
 import CustomerIcon from "../../../../public/assets/icons/cutomerIcon";
 import ProductIcon from "../../../../public/assets/icons/productIcon";
-import PaymentIcon from "../../../../public/assets/icons/paymentIcon";
+// import PaymentIcon from "../../../../public/assets/icons/paymentIcon";
 // import MarketingIcon from "../../../../public/assets/icons/marketingIcon";
 import OrdersIcon from "../../../../public/assets/icons/ordersIcon";
 import SettingIcon from "../../../../public/assets/icons/settingIcon";
@@ -154,7 +154,7 @@ export const SideBar = () => {
             <CustomerIcon />
             {collapseSidebar ? "" : "Customers"}
           </Link> */}
-          <Link
+          {/* <Link
             href="/dashboard/payments"
             className={cn(
               "",
@@ -166,7 +166,7 @@ export const SideBar = () => {
           >
             <PaymentIcon />
             {collapseSidebar ? "" : "Payments"}
-          </Link>
+          </Link> */}
           <Link
             href="/dashboard/wallets"
             className={cn(

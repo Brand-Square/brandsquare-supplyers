@@ -16,6 +16,32 @@ import Link from "next/link";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import LandingPageImage from '../../../../public/assets/images/landingpageImage.png'
+import meninwork from '../../../../public/assets/images/meninwork.png'
+import { MousePointer2 } from 'lucide-react'
+
+const content = [
+  {
+    title: "Stable Orders",
+    description: "We work with trusted Nigerian distributors.",
+  },
+  {
+    title: "Secure payments",
+    description: "Transparent payment terms—simple and reliable.",
+  },
+  {
+    title: "Market Guadiance",
+    description: "We help you tailor products for Nigerian buyers."
+  },
+  {
+    title: "Logistics Covered",
+    description: "From China to Nigeria—worry-free shipping."
+  },
+  {
+    title: "Brand growth",
+    description: "Build your name internationally through smart positioning.",
+  }
+]
 
 export default function DesktopHome() {
   const { isAuthenticated } = useInitAuthStore();
@@ -25,339 +51,132 @@ export default function DesktopHome() {
 
       <main className="flex-1">
         {/* Hero Section */}
-        <section id="home" className="bg-[#D9D9D9] overflow-hidden">
-          <div className="flex items-center mt-[4rem] h-[75vh] ml-[3.5rem]">
-            <div className="flex-[3]  space-y-4 ">
-              <h1 className="text-[54px] font-[600] font-dm-sans tracking-tight">
-                Welcome to Brandsquare Suppliers Hub
+        <section
+          id="home"
+          className="bg-[#D9D9D9] overflow-hidden flex items-center justify-between px-8 mb-8">
+          <div className="w-1/2">
+            <div>
+              <h1 className="text-[#313131] text-[50px] font-bold">
+                Become a BrandSquare Supplier - Expand Your Reach.
               </h1>
-              <p className="text-muted-foreground font-dm-sans">
-                Partner with us to bring your products to one of Africa&apos;s most active e-commerce markets. Brandsquare connects trusted Chinese suppliers directly with verified vendors across Nigeria, offering a secure and scalable partnership where your products get the exposure, reliability, and logistics support they need to thrive.
+              <p className="text-[#313131] text-lg">
+                Tap into Nigeria&apo;s booming market with guaranteed orders, reliable logistics, and full market support.
               </p>
-              {isAuthenticated ? (
-                <Link href="/dashboard">
-                  <Button className="bg-[#000051] mt-[30px] hover:bg-[#1a1b5e]/90 py-[1.5rem] text-white flex gap-2 items-center">
-                    Become a Supplier
-                    <span>
-                      <ChevronRightIcon color="#ffffff" />
-                    </span>
-                  </Button>
-                </Link>
-              ) : (
-                <Link href="/auth/create-account">
-                  <Button className="bg-[#000051] mt-[30px] hover:bg-[#1a1b5e]/90 py-[1.5rem] text-white flex gap-2 items-center">
-                    Become a Supplier
-                    <span>
-                      <ChevronRightIcon color="#ffffff" />
-                    </span>
-                  </Button>
-                </Link>
-              )}
             </div>
-            <div className="flex-[2] relative overflow-hidden">
+            <div className="mt-6">
+              <Button className="py-8 text-xl">
+                Sign Up as a supplier
+              </Button>
+              <Button
+                className="bg-[#D9D9D9] text-[#000051] border-[3px] border-[#000051] py-7 px-4 text-xl hover:bg-[#000051] hover:text-white ml-4"
+              >
+                Learn More
+              </Button>
+            </div>
+          </div>
+
+          <div className="w-1/2 relative overflow-hidden">
+            <div
+              className="h-[500px] w-[500px] bg-[#000051] rounded-full absolute -top-30 left-1/2 -translate-x-1/2 z-0"
+            ></div>
+
+            <Image
+              src={LandingPageImage}
+              alt="Hero Image"
+              width={1000}
+              height={500}
+              className="object-contain w-full h-auto relative z-10"
+            />
+          </div>
+        </section>
+
+
+        <section className="px-8">
+          <div className="flex  items-center py-8">
+            <div className="w-1/2">
               <Image
-                src="/assets/svg/hg1.svg"
-                alt="Store Booth"
-                width={5408}
-                height={4068}
-                className="w-full h-full object-cover translate-x-6 "
+                src={meninwork}
+                alt="Brandsquare suppliers"
+                className="object-contain"
+                width={600}
+                height={400}
               />
             </div>
-          </div>
-        </section>
 
-        {/* 50% Capital Section */}
-        <section className="py-8">
-          <div className="container mx-auto">
-            <h2 className="text-[48px] font-[900] tracking-tight font-dm-sans ">
-              Why Chinese Factories Choose Brandsquare
-            </h2>
-            <div className="flex items-center bg-white rounded-xl shadow-md border px-[56px]">
-              <div className="flex-1 space-y-4">
-                <p className="text-muted-foreground font-dm-sans">
-                  Chinese manufacturers choose Brandsquare because we provide secure and predictable trade. With 40% of the order value paid upfront and full balance settled upon delivery confirmation, you can produce and ship with confidence. Our vendor network ensures steady product demand, and our in-market knowledge helps your products succeed locally. From marketing to logistics, we handle the complex side—so you can focus on production.
-                </p>
-                {isAuthenticated ? (
-                  <Link href="/dashboard">
-                    <Button className="bg-[#000051] mt-[30px] hover:bg-[#1a1b5e]/90 py-[1.5rem] text-white flex gap-2 items-center">
-                      Continue to Dashboard
-                      <span>
-                        <ChevronRightIcon color="#ffffff" />
+
+            <div className="">
+              <h2 className="text-6xl font-bold mb-6 text-[#313131]">
+                Why suppliers trust Brandsquare
+              </h2>
+
+              <div className="space-y-6">
+                {content.map((item, index) => (
+                  <div key={index} className="flex items-start gap-4">
+                    <MousePointer2 className="transform scale-x-[-1]" />
+                    <div>
+                      <p className="font-semibold text-lg">{item.title}</p>
+                      <span className="text-gray-600">
+                        {item.description}
                       </span>
-                    </Button>
-                  </Link>
-                ) : (
-                  <Link href="/auth/create-account">
-                    <Button className="bg-[#000051] mt-[30px] hover:bg-[#1a1b5e]/90 py-[1.5rem] text-white flex gap-2 items-center">
-                      Become a Supplier
-                      <span>
-                        <ChevronRightIcon color="#ffffff" />
-                      </span>
-                    </Button>
-                  </Link>
-                )}
-              </div>
-              <div className="flex-1 flex items-center justify-center">
-                <Image
-                  src="/assets/svg/ma1.svg"
-                  alt="Smiling Man"
-                  width={878}
-                  height={479}
-                  className="object-contain rounded-xl"
-                />
+                    </div>
+                  </div>
+                ))}
+
               </div>
             </div>
           </div>
         </section>
 
 
-        <section className="py-8">
-          <div className="container mx-auto">
-            <h2 className="text-[48px] font-[900] tracking-tight font-dm-sans ">
-              What You’ll Gain With Brandsquare
-            </h2>
-            <div className="flex flex-row-reverse items-center bg-white rounded-xl shadow-md border px-[56px]">
-              <div className="flex-1 space-y-4">
-                <p className="text-muted-foreground font-dm-sans">
-                  When you join our supplier network, you get more than orders. You gain a trusted channel into the Nigerian market. We offer access to high-demand vendors, structured order cycles, and promotional support. Your products are marketed across platforms while our logistics team ensures seamless delivery from factory to warehouse. It’s a simple, scalable way to grow beyond borders.
-                </p>
-                {isAuthenticated ? (
-                  <Link href="/dashboard">
-                    <Button className="bg-[#000051] mt-[30px] hover:bg-[#1a1b5e]/90 py-[1.5rem] text-white flex gap-2 items-center">
-                      Continue to Dashboard
-                      <span>
-                        <ChevronRightIcon color="#ffffff" />
-                      </span>
-                    </Button>
-                  </Link>
-                ) : (
-                  <Link href="/auth/create-account">
-                    <Button className="bg-[#000051] mt-[30px] hover:bg-[#1a1b5e]/90 py-[1.5rem] text-white flex gap-2 items-center">
-                      Become a Supplier
-                      <span>
-                        <ChevronRightIcon color="#ffffff" />
-                      </span>
-                    </Button>
-                  </Link>
-                )}
+        <section
+          className="relative py-16 min-h-[500px] flex items-center h-full"
+          style={{
+            backgroundImage: "url('/assets/images/groupphoto.png')",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
+          }}
+        >
+          <div
+            className="absolute inset-0"
+            style={{
+              backgroundColor: '#000051',
+              opacity: 0.8,
+            }}
+          ></div>
+
+          <div className="container mx-auto px-4 relative z-10 text-white">
+            <div className="flex items-center justify-center flex-col text-center">
+              <h2 className="text-5xl font-bold mb-8 leading-tight">
+                Nigeria is ready for your products
+              </h2>
+
+              <div className="space-y-4 mb-10 text-center flex flex-col items-center">
+                <div className="flex items-start gap-3">
+                  <MousePointer2 className="w-5 h-5 mt-1 flex-shrink-0 transform scale-x-[-1]" />
+                  <p className="text-4xl font-bold">200M+ population with growing demand</p>
+                </div>
+                <div className="flex items-start gap-3">
+                  <MousePointer2 className="w-5 h-5 mt-1 flex-shrink-0 transform scale-x-[-1]" />
+                  <p className="text-4xl font-bold">Limited competition, high growth potential</p>
+                </div>
+                <div className="flex items-start gap-3">
+                  <MousePointer2 className="w-5 h-5 mt-1 flex-shrink-0 transform scale-x-[-1]" />
+                  <p className="text-4xl font-bold">High need for affordable, quality Chinese goods</p>
+                </div>
+                <div className="flex items-start gap-3">
+                  <MousePointer2 className="w-5 h-5 mt-1 flex-shrink-0 transform scale-x-[-1]" />
+                  <p className="text-4xl font-bold">Local supply chains need direct factory partnerships</p>
+                </div>
               </div>
-              <div className="flex-1 flex items-center justify-center">
-                <Image
-                  src="/assets/svg/ma1.svg"
-                  alt="Smiling Man"
-                  width={878}
-                  height={479}
-                  className="object-contain rounded-xl"
-                />
-              </div>
+
+              <Button className="bg-[#fff] text-[#000051]  border-[#000051] py-8 px-16 text-2xl hover:bg-[#000051] hover:text-white ">
+                Sign up as a supplier
+              </Button>
             </div>
           </div>
         </section>
 
-
-        {/* Why Choose Section */}
-        <section id="why-choose" className="py-8">
-          <div className="container mx-auto space-y-8">
-            <h2 className="text-[40px] font-[900] font-dm-sans tracking-tight text-center">
-              Why Choose Brandsquare Supplier Hub
-            </h2>
-
-            <div className="flex flex-col gap-8">
-              {/* Card 1 */}
-              <div className="bg-[#000051] flex flex-row-reverse items-center px-[76px] gap-8 rounded-xl py-[56px] text-white">
-                <div className="flex-1">
-                  <h3 className="text-[32px] font-dm-sans font-[600] mb-4">
-                    Affordable Bulk Products
-                  </h3>
-                  <p className="mb-4">
-                    Source high-quality goods at unbeatable prices directly from
-                    trusted manufacturers. We know that finding high-quality
-                    products at affordable prices is one of the biggest
-                    challenges for small businesses. That’s why we’ve partnered
-                    directly with trusted manufacturers to bring you a wide
-                    range of products at very low prices. Whether you’re looking
-                    for electronics, fashion, home goods, or beauty products,
-                    we’ve got you covered.
-                  </p>
-
-                  {isAuthenticated ? (
-                    <Link href="/dashboard">
-                      <Button className="bg-[#E55420] hover:bg-[#1a1b5e]/90 py-[1.5rem] text-white flex gap-2 items-center">
-                        Continue to Dashboard
-                        <span>
-                          <ChevronRightIcon color="#ffffff" />
-                        </span>
-                      </Button>
-                    </Link>
-                  ) : (
-                    <Link href="/auth/create-account">
-                      <Button className="bg-[#E55420] hover:bg-[#1a1b5e]/90 py-[1.5rem] text-white flex gap-2 items-center">
-                        Become a Supplier
-                        <span>
-                          <ChevronRightIcon color="#ffffff" />
-                        </span>
-                      </Button>
-                    </Link>
-                  )}
-                </div>
-                <div className="flex-1">
-                  <Image
-                    src="/assets/svg/ycu1.svg"
-                    alt="Bulk Products"
-                    width={491}
-                    height={290}
-                    className="w-[30rem] h-[17rem] object-cover rounded-lg mb-4"
-                  />
-                </div>
-              </div>
-
-              {/* Card 2 */}
-              <div className="bg-[#000051] flex  items-center px-[76px] gap-8 rounded-xl py-[56px] text-white">
-                <div className="flex-1">
-                  <h3 className="text-[32px] font-dm-sans font-[600] mb-4">
-                    Hassle-Free Logistics:
-                  </h3>
-                  <p className="mb-4">
-                    We take the stress out of logistics so you can focus on what
-                    you do best—growing your business. From the moment you place
-                    an order to the second it arrives at your doorstep, we’ve
-                    got you covered.
-                  </p>
-
-                  {isAuthenticated ? (
-                    <Link href="/dashboard">
-                      <Button className="bg-[#E55420] hover:bg-[#1a1b5e]/90 py-[1.5rem] text-white flex gap-2 items-center">
-                        Continue to Dashboard
-                        <span>
-                          <ChevronRightIcon color="#ffffff" />
-                        </span>
-                      </Button>
-                    </Link>
-                  ) : (
-                    <Link href="/auth/create-account">
-                      <Button className="bg-[#E55420] hover:bg-[#1a1b5e]/90 py-[1.5rem] text-white flex gap-2 items-center">
-                        Become a Supplier
-                        <span>
-                          <ChevronRightIcon color="#ffffff" />
-                        </span>
-                      </Button>
-                    </Link>
-                  )}
-                </div>
-                <div className="flex-1">
-                  <Image
-                    src="/assets/svg/ycu2.svg"
-                    alt="Bulk Products"
-                    width={491}
-                    height={290}
-                    className="w-[30rem] h-[17rem] object-cover rounded-lg mb-4"
-                  />
-                </div>
-              </div>
-
-              {/* Card 3 */}
-              <div className="bg-[#000051] flex flex-row-reverse items-center px-[76px] gap-8 rounded-xl py-[56px] text-white">
-                <div className="flex-1">
-                  <h3 className="text-[32px] font-dm-sans font-[600] mb-4">
-                    Your Own Online Store:
-                  </h3>
-                  <p className="mb-4">
-                    With Brandsquare&apos;s Suppliers &apos; Hub, you can create
-                    and customize your storefront in minutes and start selling
-                    to customers right away. It’s never been easier to take your
-                    business online and reach a wider audience.
-                  </p>
-
-                  {isAuthenticated ? (
-                    <Link href="/dashboard">
-                      <Button className="bg-[#E55420] hover:bg-[#1a1b5e]/90 py-[1.5rem] text-white flex gap-2 items-center">
-                        Continue to Dashboard
-                        <span>
-                          <ChevronRightIcon color="#ffffff" />
-                        </span>
-                      </Button>
-                    </Link>
-                  ) : (
-                    <Link href="/auth/create-account">
-                      <Button className="bg-[#E55420] hover:bg-[#1a1b5e]/90 py-[1.5rem] text-white flex gap-2 items-center">
-                        Become a Supplier
-                        <span>
-                          <ChevronRightIcon color="#ffffff" />
-                        </span>
-                      </Button>
-                    </Link>
-                  )}
-                </div>
-                <div className="flex-1">
-                  <Image
-                    src="/assets/svg/ycu3.svg"
-                    alt="Bulk Products"
-                    width={491}
-                    height={290}
-                    className="w-[30rem] h-[17rem] object-cover rounded-lg mb-4"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Digital Marketplace Section */}
-        <section className="py-8">
-          <div className="container mx-auto">
-            <div
-              style={{
-                backgroundImage: "url('/assets/images/authBg.png')",
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-                backgroundRepeat: "no-repeat",
-              }}
-              className="flex items-center gap-8 bg-[#1a1b5e] rounded-xl text-white"
-            >
-              <div className="flex-1 ml-[50px] space-y-4">
-                <h2 className="text-[30px] font-dm-sans font-[600]">
-                  Brandsquare is designed to help businesses like yours thrive
-                  in the digital marketplace
-                </h2>
-                <p className="text-sm font-dm-sans">
-                  Running a successful business requires more than just great
-                  products—it’s about staying organized, making smart decisions,
-                  and keeping your customers happy. That’s why Brandsquare’s
-                  Suppliers&apos; Hub comes equipped with powerful business tools
-                  that put you in the driver’s seat.
-                </p>
-                {isAuthenticated ? (
-                  <Link href="/dashboard">
-                    <Button className="bg-[#fff] mt-2 hover:bg-[#1a1b5e]/90 py-[1.5rem] text-[#000051] flex gap-2 items-center">
-                      Continue to Dashboard
-                      <span>
-                        <ChevronRightIcon color="#000051" />
-                      </span>
-                    </Button>
-                  </Link>
-                ) : (
-                  <Link href="/auth/create-account">
-                    <Button className="bg-[#fff] mt-2 hover:bg-[#1a1b5e]/90 py-[1.5rem] text-[#000051] flex gap-2 items-center">
-                      Get Started
-                      <span>
-                        <ChevronRightIcon color="#000051" />
-                      </span>
-                    </Button>
-                  </Link>
-                )}
-              </div>
-              <div className="flex-1 flex relative">
-                <Image
-                  src="/assets/svg/dash1.svg"
-                  alt="Dashboard"
-                  width={567.2191162109375}
-                  height={398.14361572265625}
-                  className="w-full h-full mt-[63px] "
-                />
-              </div>
-            </div>
-          </div>
-        </section>
 
         {/* Why Different Section */}
         <section className="py-8">
@@ -439,140 +258,6 @@ export default function DesktopHome() {
           </div>
         </section>
 
-        {/* Features Section */}
-        <section id="features" className="py-8 bg-gray-50">
-          <div className="container mx-auto">
-            <h2 className="text-[40px] font-[900] font-dm-sans  tracking-tight mb-8">
-              Features That Empower Your Business
-            </h2>
-            <div className="flex items-center">
-              <div className="flex-[3] flex justify-center items-center ">
-                <div className="bg-white rounded-md shadow-md py-[29px] px-[48px] flex gap-x-3 items-center">
-                  <div className="w-[6px] rounded-[6px] bg-[#F0F1F6] h-full z-20">
-                    <div className="w-full h-[50%] bg-[#E55420] rounded-[6px]"></div>
-                  </div>
-                  <div className="grid grid-cols-2 md:grid-cols-2 gap-4">
-                    {/* Feature 1 */}
-                    <div className="bg-[#F0F1F6] p-6 rounded-xl shadow-sm">
-                      <div className="w-12 h-12 bg-[#1a1b5e]/10 rounded-full flex items-center justify-center mb-4">
-                        <svg
-                          className="w-6 h-6 text-[#1a1b5e]"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M12 6V18M6 12H18"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
-                      </div>
-                      <h3 className="text-lg font-bold mb-2">
-                        Sales Monitoring
-                      </h3>
-                      <p className="text-muted-foreground">
-                        Get detailed analytics and real-time insights into your
-                        sales performance.
-                      </p>
-                    </div>
-
-                    {/* Feature 2 */}
-                    <div className="bg-[#F0F1F6] p-6 rounded-xl shadow-sm">
-                      <div className="w-12 h-12 bg-[#1a1b5e]/10 rounded-full flex items-center justify-center mb-4">
-                        <svg
-                          className="w-6 h-6 text-[#1a1b5e]"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M9 19L3.5 13.5M3.5 13.5L9 8M3.5 13.5H21"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
-                      </div>
-                      <h3 className="text-lg font-bold mb-2">
-                        Financial Analytics
-                      </h3>
-                      <p className="text-muted-foreground">
-                        Keep track of your revenue, expenses, and profit margins
-                        with our comprehensive financial tools.
-                      </p>
-                    </div>
-
-                    {/* Feature 3 */}
-                    <div className="bg-[#F0F1F6] p-6 rounded-xl shadow-sm">
-                      <div className="w-12 h-12 bg-[#1a1b5e]/10 rounded-full flex items-center justify-center mb-4">
-                        <svg
-                          className="w-6 h-6 text-[#1a1b5e]"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M12 16V12M12 8H12.01M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12Z"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
-                      </div>
-                      <h3 className="text-lg font-bold mb-2">Order Tracking</h3>
-                      <p className="text-muted-foreground">
-                        Monitor order status and shipments in real-time to keep
-                        your customers informed.
-                      </p>
-                    </div>
-
-                    {/* Feature 4 */}
-                    <div className="bg-[#F0F1F6] p-6 rounded-xl shadow-sm">
-                      <div className="w-12 h-12 bg-[#1a1b5e]/10 rounded-full flex items-center justify-center mb-4">
-                        <svg
-                          className="w-6 h-6 text-[#1a1b5e]"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M9 12H15M9 16H15M17 21H7C5.89543 21 5 20.1046 5 19V5C5 3.89543 5.89543 3 7 3H12.5858C12.851 3 13.1054 3.10536 13.2929 3.29289L18.7071 8.70711C18.8946 8.89464 19 9.149 19 9.41421V19C19 20.1046 18.1046 21 17 21Z"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
-                      </div>
-                      <h3 className="text-lg font-bold mb-2">
-                        Inventory Management
-                      </h3>
-                      <p className="text-muted-foreground">
-                        Receive real-time inventory updates and automated
-                        restock alerts to never miss a sale.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex-[2] flex justify-center py-4">
-                <Image
-                  src="/assets/svg/chart1.svg"
-                  alt="Dashboard Analytics"
-                  width={400}
-                  height={240}
-                  className="object-contain"
-                />
-              </div>
-            </div>
-          </div>
-        </section>
 
         {/* FAQ Section */}
         <section id="faqs" className="py-8">

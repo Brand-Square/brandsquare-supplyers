@@ -16,7 +16,7 @@ import { MousePointer2 } from 'lucide-react';
 const content = [
   {
     title: "Stable Orders",
-    description: "We work with trusted Nigerian distributors.",
+    description: "We work with trusted African distributors.",
   },
   {
     title: "Secure Payments",
@@ -24,11 +24,11 @@ const content = [
   },
   {
     title: "Market Guidance",
-    description: "We help you tailor products for Nigerian buyers."
+    description: "We help you tailor products for African buyers."
   },
   {
     title: "Logistics Covered",
-    description: "From China to Nigeria—worry-free shipping."
+    description: "From China to African—worry-free shipping."
   },
   {
     title: "Brand Growth",
@@ -82,7 +82,7 @@ export default function DesktopHome() {
                 Become a BrandSquare Supplier - Expand Your Reach.
               </h1>
               <p className="text-[#313131] text-base lg:text-lg mt-4">
-                Tap into Nigeria&apos;s booming market with guaranteed orders, reliable logistics, and full market support.
+                Tap into African&apos;s booming market with guaranteed orders, reliable logistics, and full market support.
               </p>
             </div>
             <div className="mt-6 flex flex-wrap gap-4">
@@ -138,7 +138,7 @@ export default function DesktopHome() {
           </div>
         </section>
 
-        {/* Nigeria Ready Section */}
+        {/* African Ready Section */}
         <section className="relative py-16 min-h-[500px] flex items-center"
           style={{
             backgroundImage: "url('/assets/images/groupphoto.png')",
@@ -150,7 +150,7 @@ export default function DesktopHome() {
           <div className="container mx-auto px-4 relative z-10 text-white">
             <div className="max-w-4xl mx-auto text-center">
               <h2 className="text-3xl lg:text-5xl font-bold mb-8 leading-tight">
-                Nigeria is ready for your products
+                Africa is ready for your products
               </h2>
 
               <div className="space-y-6 mb-10">

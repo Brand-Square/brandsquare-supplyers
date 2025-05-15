@@ -138,7 +138,7 @@ export default function DesktopHome() {
           </div>
         </section>
 
-        {/* African Ready Section */}
+       
         <section className="relative py-16 min-h-[500px] flex items-center"
           style={{
             backgroundImage: "url('/assets/images/groupphoto.png')",

@@ -16,7 +16,7 @@ import { MousePointer2 } from 'lucide-react'
 const content = [
   {
     title: "Stable Orders",
-    description: "We work with trusted Nigerian distributors.",
+    description: "We work with trusted African distributors.",
   },
   {
     title: "Secure payments",
@@ -24,11 +24,11 @@ const content = [
   },
   {
     title: "Market Guidance",
-    description: "We help you tailor products for Nigerian buyers."
+    description: "We help you tailor products for African buyers."
   },
   {
     title: "Logistics Covered",
-    description: "From China to Nigeria—worry-free shipping."
+    description: "From China to African—worry-free shipping."
   },
   {
     title: "Brand growth",
@@ -82,10 +82,10 @@ export default function MobileHome() {
                 Become a BrandSquare Supplier - Expand Your Reach.
               </h1>
               <p className="text-[#313131] text-base mt-2">
-                Tap into Nigeria&apos;s booming market with guaranteed orders, reliable logistics, and full market support.
+                Tap into African&apos;s booming market with guaranteed orders, reliable logistics, and full market support.
               </p>
               <div className="mt-6 flex flex-col space-y-4">
-                {renderAuthButton()}               
+                {renderAuthButton()}
               </div>
             </div>
             <div className="order-1 w-full relative">
@@ -134,7 +134,7 @@ export default function MobileHome() {
           </div>
         </section>
 
-        {/* Nigeria Ready Section - Mobile Restructured */}
+        {/* African Ready Section - Mobile Restructured */}
         <section className="relative py-8 min-h-[400px] flex items-center"
           style={{
             backgroundImage: "url('/assets/images/groupphoto.png')",
@@ -146,11 +146,11 @@ export default function MobileHome() {
           <div className="container mx-auto px-4 relative z-10 text-white">
             <div className="flex flex-col items-center text-center">
               <h2 className="text-2xl font-bold mb-6">
-                Nigeria is ready for your products
+                Africa is ready for your products
               </h2>
               <div className="space-y-4 mb-6">
                 {[
-                  "200M+ population with growing demand",
+                  "200m+ population in Nigeria alone, with growing demand",
                   "Limited competition, high growth potential",
                   "High need for affordable, quality Chinese goods",
                   "Local supply chains need direct factory partnerships"

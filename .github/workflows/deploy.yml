@@ -1,0 +1,38 @@
+# FOR SUPPLYERS
+name: Deploy to VPS
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Deploy via SSH
+      uses: appleboy/ssh-action@v1.0.0
+      with:
+        host: ${{ secrets.VPS_HOST }}
+        username: ${{ secrets.VPS_USERNAME }}
+        password: ${{ secrets.VPS_PASSWORD }}
+        port: ${{ secrets.VPS_PORT }}
+        script: |
+          # Install Node.js if not present
+          if ! command -v node &> /dev/null; then
+            curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
+            apt-get install -y nodejs
+            npm install -g pm2
+          fi
+
+          # then continue with deploy.
+          cd /var/www/brandsquare-supplyers
+          git pull origin main
+          if git diff --name-only HEAD~1 HEAD | grep -q 'package.json\|package-lock.json'; then
+            npm install
+          else
+            npm run build
+          fi
+          pm2 restart 10

@@ -28,7 +28,7 @@ const content = [
   },
   {
     title: "Logistics Covered",
-    description: "From China to African—worry-free shipping."
+    description: "From China to Africa—worry-free shipping."
   },
   {
     title: "Brand Growth",

@@ -350,12 +350,10 @@ const useInitAuthStore = create<AuthStore>((set, get) => {
         );
 
         // Set secure cookies with proper attributes
-        document.cookie = `token=${token}; Secure; SameSite=Strict; max-age=${
-          2 * 24 * 60 * 60
-        }; path=/`;
-        document.cookie = `email=${
-          response.data.data.details.email
-        }; Secure; SameSite=Strict; max-age=${2 * 24 * 60 * 60}; path=/`;
+        document.cookie = `token=${token}; Secure; SameSite=Strict; max-age=${2 * 24 * 60 * 60
+          }; path=/`;
+        document.cookie = `email=${response.data.data.details.email
+          }; Secure; SameSite=Strict; max-age=${2 * 24 * 60 * 60}; path=/`;
 
         // Store token in localStorage for persistence
         localStorage.setItem("token", token);
@@ -368,13 +366,11 @@ const useInitAuthStore = create<AuthStore>((set, get) => {
         console.log(response.data, "response data");
 
         // STORING TOKEN IN COOKIE FOR SESSION PERSISTENCY OF 48 HOURS
-        document.cookie = `token=${
-          response.data.data.token
-        }; Secure; SameSite=None; max-age=${2 * 24 * 60 * 60} :path=/`;
+        document.cookie = `token=${response.data.data.token
+          }; Secure; SameSite=None; max-age=${2 * 24 * 60 * 60} :path=/`;
 
-        document.cookie = `email=${
-          response.data.data.details.email
-        }; Secure; SameSite=None;max-age=${2 * 24 * 60 * 60} :path=/`;
+        document.cookie = `email=${response.data.data.details.email
+          }; Secure; SameSite=None;max-age=${2 * 24 * 60 * 60} :path=/`;
 
         return response.data;
       } catch (error: any) {
@@ -429,12 +425,10 @@ const useInitAuthStore = create<AuthStore>((set, get) => {
         );
 
         // Set secure cookies with proper attributes
-        document.cookie = `token=${token}; Secure; SameSite=Strict; max-age=${
-          2 * 24 * 60 * 60
-        }; path=/`;
-        document.cookie = `email=${
-          response.data.data.details.email
-        }; Secure; SameSite=Strict; max-age=${2 * 24 * 60 * 60}; path=/`;
+        document.cookie = `token=${token}; Secure; SameSite=Strict; max-age=${2 * 24 * 60 * 60
+          }; path=/`;
+        document.cookie = `email=${response.data.data.details.email
+          }; Secure; SameSite=Strict; max-age=${2 * 24 * 60 * 60}; path=/`;
 
         // Store token in localStorage for persistence
         localStorage.setItem("token", token);
@@ -444,12 +438,10 @@ const useInitAuthStore = create<AuthStore>((set, get) => {
         );
 
         // STORING TOKEN IN COOKIE FOR SESSION PERSISTENCY OF 48 HOURS
-        document.cookie = `token=${
-          response.data.data.token
-        }; Secure; SameSite=None; max-age=${2 * 24 * 60 * 60}; path=/`;
-        document.cookie = `email=${
-          response.data.data.details.email
-        }; Secure; SameSite=None;max-age=${2 * 24 * 60 * 60}; path=/`;
+        document.cookie = `token=${response.data.data.token
+          }; Secure; SameSite=None; max-age=${2 * 24 * 60 * 60}; path=/`;
+        document.cookie = `email=${response.data.data.details.email
+          }; Secure; SameSite=None;max-age=${2 * 24 * 60 * 60}; path=/`;
         toast.success("Login successful");
         console.log(response, "response init");
         setTimeout(() => {
@@ -535,9 +527,8 @@ const useInitAuthStore = create<AuthStore>((set, get) => {
         set({ isLoading: false });
 
         toast.success(response.data.message);
-        document.cookie = `email=${
-          email.email
-        }; Secure; SameSite=None;max-age=${2 * 24 * 60 * 60}`;
+        document.cookie = `email=${email.email
+          }; Secure; SameSite=None;max-age=${2 * 24 * 60 * 60}`;
         return response.data;
       } catch (error: any) {
         toast.error(
@@ -613,12 +604,10 @@ const useInitAuthStore = create<AuthStore>((set, get) => {
           );
 
           // Set cookies
-          document.cookie = `token=${token}; Secure; SameSite=Strict; max-age=${
-            2 * 24 * 60 * 60
-          }; path=/`;
-          document.cookie = `email=${
-            response.data.data.details.email
-          }; Secure; SameSite=Strict; max-age=${2 * 24 * 60 * 60}; path=/`;
+          document.cookie = `token=${token}; Secure; SameSite=Strict; max-age=${2 * 24 * 60 * 60
+            }; path=/`;
+          document.cookie = `email=${response.data.data.details.email
+            }; Secure; SameSite=Strict; max-age=${2 * 24 * 60 * 60}; path=/`;
 
           return Promise.resolve();
         } else {
@@ -631,86 +620,36 @@ const useInitAuthStore = create<AuthStore>((set, get) => {
       }
     },
 
-    updateVendorProfile: async (data: ProfileUpdateData) => {
-      console.log(data, "data");
+    updateVendorProfile: async (data) => {
       const token = localStorage.getItem("token");
-      if (!token) {
-        throw new Error("No authentication token found");
-      }
+      if (!token) throw new Error("No authentication token found");
 
       try {
         set({ isUpdateProfileLoading: true });
         const formData = new FormData();
 
-        // Always append all fields, even if empty strings
-        formData.append("businessName", data.businessName ?? "");
-        formData.append("ownerName", data.ownerName ?? "");
-        formData.append("phoneNumber", data.phoneNumber ?? "");
-        formData.append("businessType", data.businessType ?? "");
-        formData.append("storeName", data.storeName ?? "");
+        // Append all fields
+        Object.entries(data).forEach(([key, value]) => {
+          if (value === undefined || value === null) return;
 
-        // productCategories: send as empty string if not provided or empty
-        const tepCategory: string[] = [];
-
-        // Append each category if provided
-        if (data.productCategories && Array.isArray(data.productCategories)) {
-          data.productCategories.forEach((categoryId) => {
-            tepCategory.push(categoryId);
-          });
-
-          // Convert to string if needed, e.g., JSON or comma-separated
-          formData.append("productCategories", JSON.stringify(tepCategory));
-        }
-
-        // No else needed here, if the array is empty or not provided, the key won't be appended, which is standard for empty multipart fields.
-
-        // notificationPreferences: always send as stringified object
-        // formData.append("notificationPreferences", data.notificationPreferences.salesAlert)
-        formData.append(
-          "notificationPreferences",
-          JSON.stringify({
-            salesAlert: data.notificationPreferences?.salesAlert
-              ? "true"
-              : "false",
-            promotions: data.notificationPreferences?.promotions
-              ? "true"
-              : "false",
-          })
-        );
-
-        // Always append these fields, even if empty
-        formData.append("deliveryAddresses", data.deliveryAddresses ?? "");
-        formData.append("businessAddress", data.businessAddress ?? "");
-        formData.append(
-          "businessRegistrationNumber",
-          data.businessRegistrationNumber ?? ""
-        );
-        formData.append(
-          "taxIdentificationNumber",
-          data.taxIdentificationNumber ?? ""
-        );
-        formData.append("location", JSON.stringify(data.location ?? {}));
-
-        // logo: send as empty string if not provided
-        if (data.logo) {
-          formData.append("logo", data.logo);
-        } else {
-          formData.append("logo", "");
-        }
-
-        // complianceDocument: send as empty string if not provided
-        // complianceDocument: append each URL if provided, otherwise send empty string
-
-        const compDoc: string[] = [];
-        if (data.complianceDocument && Array.isArray(data.complianceDocument)) {
-          data.complianceDocument.forEach((docUrl) => {
-            compDoc.push(docUrl);
-          });
-          formData.append("complianceDocument", JSON.stringify(compDoc));
-        }
+          if (typeof value === 'object' && !(value instanceof File)) {
+            formData.append(key, JSON.stringify(value));
+          } else if (Array.isArray(value)) {
+            value.forEach((item, index) => {
+              if (item instanceof File) {
+                formData.append(`${key}[${index}]`, item);
+              }
+            });
+            if (value.length > 0 && !(value[0] instanceof File)) {
+              formData.append(key, JSON.stringify(value));
+            }
+          } else {
+            formData.append(key, value);
+          }
+        });
 
         const response = await axiosInstance.put(
-          "/profile-update/vendor",
+          "/supplier-user/profile/update",
           formData,
           {
             headers: {
@@ -721,31 +660,23 @@ const useInitAuthStore = create<AuthStore>((set, get) => {
         );
 
         if (response.data.isSuccess) {
-          // Update local storage with new vendor details if they're returned
-          if (response.data.data?.details) {
+          if (response.data.data) {
             localStorage.setItem(
               "vendorDetails",
-              JSON.stringify(response.data.data.details)
+              JSON.stringify(response.data.data)
             );
           }
-          toast.success("Profile updated successfully");
-          set({ isUpdateProfileLoading: false });
-          return Promise.resolve();
+          return response.data.data;
         }
-
+        throw new Error(response.data.message || "Failed to update profile");
+      } catch (error) {
+        console.error("Update error:", error);
+        throw error;
+      } finally {
         set({ isUpdateProfileLoading: false });
-        return Promise.reject("Failed to update profile");
-      } catch (error: any) {
-        console.log(error, "error");
-        set({ isUpdateProfileLoading: false });
-        toast.error(
-          error?.response?.data?.message || "Failed to update profile"
-        );
-        return Promise.reject(
-          error?.response?.data?.message || "Failed to update profile"
-        );
       }
     },
+
     isUpdateProfileLoading: false,
     setUpdateProfileLoading: (loading: boolean) =>
       set({ isUpdateProfileLoading: loading }),

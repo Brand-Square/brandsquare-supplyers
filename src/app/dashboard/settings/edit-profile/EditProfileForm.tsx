@@ -26,6 +26,7 @@ import {
   useVendorProfile,
 } from "@/app/store/useVendorProductStore";
 import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 import useInitAuthStore from "@/app/store/InitAuthStore";
 
 // Sample countries
@@ -50,9 +51,15 @@ const BUSINESS_TYPES = [
   { value: "soleProprietorship", label: "Sole Proprietorship" },
 ];
 
-export default function ProfileEditor() {
+interface ProfileEditorProps {
+  isCompleteProfileFlow?: boolean;
+}
+
+export default function ProfileEditor({ isCompleteProfileFlow = false }: ProfileEditorProps) {
   const [mounted, setMounted] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const router = useRouter();
+
 
   // Form state
   const [logo, setLogo] = useState<File | null>(null);
@@ -243,6 +250,10 @@ export default function ProfileEditor() {
         promotions: notificationPreferences.promotions,
       },
     };
+
+    if (isCompleteProfileFlow) {
+      router.push("/dashboard");
+    }
 
     try {
       await updateVendorProfile(updateData);

@@ -68,6 +68,7 @@ interface VerifyPasswordPayload {
 interface AuthStore extends AuthenticateVendorStore {
   isLoading: boolean;
   error: any;
+
   isAuthenticated: boolean;
   register: (Credential: RegisterCredentials) => Promise<any>;
   resetState: () => void;
@@ -88,6 +89,8 @@ interface AuthStore extends AuthenticateVendorStore {
   updateVendorProfile: (data: ProfileUpdateData) => Promise<any>;
   isUpdateProfileLoading: boolean;
   setUpdateProfileLoading: (loading: boolean) => void;
+  profileComplete: boolean;
+  checkProfileComplete: () => boolean;
 }
 
 interface verifyOtp {
@@ -111,6 +114,7 @@ interface LoginResponse {
 interface Data {
   user: string;
   businessName: string;
+  profileComplete: boolean;
   productCategories: string[];
   status: string;
   performanceMetrics: {
@@ -231,9 +235,24 @@ const useInitAuthStore = create<AuthStore>((set, get) => {
     isLoading: false,
     error: null,
     isAuthenticated: false,
+    profileComplete: false,
     termsAccepted: termsAccepted,
     // IMPORTED FROM AUTH STORE
     password: "",
+
+
+    checkProfileComplete: () => {
+      const vendorDetails = localStorage.getItem("vendorDetails");
+      if (!vendorDetails) return false;
+
+      try {
+        const details = JSON.parse(vendorDetails);
+        return details.profileComplete || false;
+      } catch {
+        return false;
+      }
+    },
+
     setVendor: (vendor: Vendor | null) => {
       if (typeof window !== "undefined") {
         if (vendor) {
@@ -442,6 +461,11 @@ const useInitAuthStore = create<AuthStore>((set, get) => {
           }; Secure; SameSite=None; max-age=${2 * 24 * 60 * 60}; path=/`;
         document.cookie = `email=${response.data.data.details.email
           }; Secure; SameSite=None;max-age=${2 * 24 * 60 * 60}; path=/`;
+
+        const isProfileComplete = response.data.data.details.profileComplete || false;
+        set({ profileComplete: isProfileComplete });
+
+
         toast.success("Login successful");
         console.log(response, "response init");
         setTimeout(() => {
@@ -620,7 +644,7 @@ const useInitAuthStore = create<AuthStore>((set, get) => {
       }
     },
 
-    updateVendorProfile: async (data) => {
+    updateVendorProfile: async (data: ProfileUpdateData) => {
       const token = localStorage.getItem("token");
       if (!token) throw new Error("No authentication token found");
 
@@ -628,26 +652,34 @@ const useInitAuthStore = create<AuthStore>((set, get) => {
         set({ isUpdateProfileLoading: true });
         const formData = new FormData();
 
-        // Append all fields
+        // Append all fields to formData
         Object.entries(data).forEach(([key, value]) => {
           if (value === undefined || value === null) return;
 
+          // Handle nested objects (like location)
           if (typeof value === 'object' && !(value instanceof File)) {
             formData.append(key, JSON.stringify(value));
-          } else if (Array.isArray(value)) {
+          }
+          // Handle arrays (like compliance documents or product categories)
+          else if (Array.isArray(value)) {
+            // Handle file arrays
             value.forEach((item, index) => {
               if (item instanceof File) {
                 formData.append(`${key}[${index}]`, item);
               }
             });
+            // Handle string/number arrays
             if (value.length > 0 && !(value[0] instanceof File)) {
               formData.append(key, JSON.stringify(value));
             }
-          } else {
+          }
+          // Handle primitive values and files
+          else {
             formData.append(key, value);
           }
         });
 
+        // Make the API request
         const response = await axiosInstance.put(
           "/supplier-user/profile/update",
           formData,
@@ -660,23 +692,49 @@ const useInitAuthStore = create<AuthStore>((set, get) => {
         );
 
         if (response.data.isSuccess) {
-          if (response.data.data) {
-            localStorage.setItem(
-              "vendorDetails",
-              JSON.stringify(response.data.data)
-            );
-          }
-          return response.data.data;
+          // Create updated vendor details with profileComplete flag
+          const updatedDetails = {
+            ...response.data.data,
+            profileComplete: true // Mark profile as complete
+          };
+
+          // Update localStorage
+          localStorage.setItem(
+            "vendorDetails",
+            JSON.stringify(updatedDetails)
+          );
+
+          // Update store state
+          set({
+            vendor: {
+              companyName: updatedDetails.businessName,
+              email: updatedDetails.email,
+              password: "", // Never store password in state
+              id: updatedDetails._id,
+              updatedAt: updatedDetails.updatedAt,
+              createdAt: updatedDetails.createdAt,
+            },
+            profileComplete: true,
+            isAuthenticated: true
+          });
+
+          toast.success("Profile updated successfully!");
+          return updatedDetails;
         }
         throw new Error(response.data.message || "Failed to update profile");
       } catch (error) {
         console.error("Update error:", error);
+        toast.error(
+          error instanceof Error
+            ? error.message
+            : "Failed to update profile. Please try again."
+        );
         throw error;
       } finally {
         set({ isUpdateProfileLoading: false });
       }
     },
-
+    
     isUpdateProfileLoading: false,
     setUpdateProfileLoading: (loading: boolean) =>
       set({ isUpdateProfileLoading: loading }),

@@ -5,7 +5,7 @@ export function Profile() {
   return (
     <div className="grid md:grid-cols-2 items-start">
       <ProfileBasicInfos />
-      {/* <ComplianceRatingChart /> */}
+    
     </div>
   );
 }

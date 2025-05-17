@@ -99,7 +99,7 @@ export default function ProfileEditor({ isCompleteProfileFlow = false }: Profile
 
       setFormData({
         businessName: vendor.businessName || "",
-        ownerName: vendor.ownerName?.email.split("@")[0] || "",
+        ownerName: vendor.ownerName || "",
         storeName: vendor.storeName || "",
         phoneNumber: vendor.phoneNumber || "",
         businessType: vendor.businessType || "",

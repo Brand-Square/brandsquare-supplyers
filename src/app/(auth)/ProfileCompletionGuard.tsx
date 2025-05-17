@@ -2,10 +2,8 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, ReactNode } from "react";
 import useInitAuthStore from "@/app/store/InitAuthStore";
-// import LoadingSpinner from "../ui/LoadingSpinner"; 
-// import div from '@/components/ui/div';
 
 const PROFILE_COMPLETION_ROUTE = "/complete-profile";
 const PUBLIC_ROUTES = [
@@ -15,11 +13,13 @@ const PUBLIC_ROUTES = [
   "/complete-profile"
 ];
 
+interface ProfileCompletionGuardProps {
+  children: ReactNode;
+}
+
 export default function ProfileCompletionGuard({
   children
-}: {
-  children: React.ReactNode
-}) {
+}: ProfileCompletionGuardProps) {
   const router = useRouter();
   const pathname = usePathname();
   const {
@@ -53,7 +53,7 @@ export default function ProfileCompletionGuard({
   }, [isAuthenticated, isLoading, pathname, profileComplete, checkProfileComplete, router]);
 
   if (isLoading) {
-    return <div>loading...</div>;
+    return <div>Loading...</div>;
   }
 
   // Allow access if:
@@ -64,5 +64,5 @@ export default function ProfileCompletionGuard({
                              (isAuthenticated && (profileComplete || checkProfileComplete())) ||
                              pathname === PROFILE_COMPLETION_ROUTE;
 
-  return shouldRenderChildren ? <>{children}</> : <div>loading...</div>;
+  return shouldRenderChildren ? <>{children}</> : <div>Loading...</div>;
 }

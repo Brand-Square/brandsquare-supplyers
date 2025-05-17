@@ -87,12 +87,12 @@ export default function ProfileEditor() {
   const { data: vendorProfileData } = useVendorProfile();
 
   useEffect(() => {
-    if (vendorProfileData?.vendor) {
-      const vendor = vendorProfileData.vendor;
+    if (vendorProfileData?.data) {
+      const vendor = vendorProfileData.data;
 
       setFormData({
         businessName: vendor.businessName || "",
-        ownerName: vendor.ownerName || "",
+        ownerName: vendor.ownerName?.email.split("@")[0] || "",
         storeName: vendor.storeName || "",
         phoneNumber: vendor.phoneNumber || "",
         businessType: vendor.businessType || "",

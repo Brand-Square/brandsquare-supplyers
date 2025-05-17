@@ -584,7 +584,7 @@ const useInitAuthStore = create<AuthStore>((set, get) => {
           {
             email: payload.email,
             password: payload.password,
-            userType: "vendor",
+            userType: "supplier",
           }
         );
 

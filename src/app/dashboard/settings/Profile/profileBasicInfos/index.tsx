@@ -59,13 +59,13 @@ export function ProfileBasicInfos() {
         : `https://vendor.brandsquare.store/store-front/${vendorId}`;
 
       // Create a pretty, shareable URL (you could add store name here if available)
-      const prettyUrl = data?.vendor?.storeName
-        ? `${baseUrl}?store=${encodeURIComponent(data.vendor.storeName)}`
+      const prettyUrl = data?.data?.businessName
+        ? `${baseUrl}?store=${encodeURIComponent(data.data.businessName)}`
         : baseUrl;
 
       setStoreUrl(prettyUrl);
     }
-  }, [vendorId, data?.vendor?.storeName]);
+  }, [vendorId, data?.data?.businessName]);
 
   // Handle copy to clipboard
   const handleCopyLink = () => {
@@ -82,8 +82,19 @@ export function ProfileBasicInfos() {
     }
   };
 
-  const vendor = data?.vendor;
-  console.log(vendor, "vendor");
+  // Map API response to expected vendor structure
+  const vendor = data?.data ? {
+    ...data.data,
+    storeName: data.data.businessName,
+    ownerName: data.data.user?.email.split('@')[0] || "Vendor",
+    phoneNumber: data.data.phoneNumber || "No Phone Number Available",
+    location: data.data.location || {
+      city: "",
+      state: "",
+      country: ""
+    },
+    businessAddress: data.data.businessAddress || "No Address Available"
+  } : null;
 
   // Skeleton loader component for loading state
   const ProfileSkeleton = () => (
@@ -266,8 +277,7 @@ export function ProfileBasicInfos() {
             <span className="text-sm text-[#6A6B72]">Email</span>
           </div>
           <p className="text-theme-gray mt-2">
-            {/* Use a dummy email or look for it in another property */}
-            {"No Email Available"}
+            {vendor?.user?.email || "No Email Available"}
           </p>
         </div>
 

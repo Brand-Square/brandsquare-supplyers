@@ -365,7 +365,7 @@ export const useVendorProfile = () => {
     }
   }, []);
 
-  return useQuery<VendorProfileResponse>({
+  return useQuery({
     queryKey: ["vendor-profile", token],
     queryFn: async () => {
       if (!token) {
@@ -373,27 +373,34 @@ export const useVendorProfile = () => {
       }
 
       try {
-        const decodedToken = jwtDecode<DecodedToken>(token);
-        const vendorId = decodedToken.userId;
-
-        if (!vendorId) {
-          throw new Error("Vendor ID not found in token.");
+        // Get user data from local storage
+        const storedData = localStorage.getItem("vendorDetails");
+        if (!storedData) {
+          throw new Error("User data not found in local storage.");
         }
 
-        const response = await axiosInstance.get(`/vendor-user/profile/view`);
-        //console.log(response.data, "response data from vendor profile");
+        const userData = JSON.parse(storedData);
+        const supplierId = userData?.userDetails?._id;
+
+        console.log('supplierId', supplierId);
+
+        if (!supplierId) {
+          throw new Error("Supplier ID not found in user details.");
+        }
+
+        // Make API call with the correct supplier ID
+        const response = await axiosInstance.get(`/supplier-user/${supplierId}/info`);
         return response.data;
       } catch (error: unknown) {
-        console.error("Error decoding token or fetching data:", error);
-        return Promise.reject("Failed to decode token or fetch data.");
+        console.error("Error fetching supplier data:", error);
+        throw new Error("Failed to fetch supplier data.");
       }
     },
-    staleTime: 5 * 60 * 1000,
+    staleTime: 5 * 60 * 1000, // 5 minutes
     refetchOnWindowFocus: false,
     enabled: !!token,
   });
 };
-
 // Vendor product store
 interface MyOrdersResponse {
   isSuccess: boolean;

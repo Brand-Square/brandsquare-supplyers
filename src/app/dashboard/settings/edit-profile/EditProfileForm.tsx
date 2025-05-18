@@ -1,7 +1,5 @@
 "use client";
-
 import type React from "react";
-
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { ChevronLeft, Upload, Trash2 } from "lucide-react";
@@ -41,7 +39,7 @@ const COUNTRIES = [
   "Brazil",
 ];
 
-// Sample business types
+
 const BUSINESS_TYPES = [
   { value: "limitedLiability", label: "Limited Liability" },
   { value: "partnership", label: "Partnership" },

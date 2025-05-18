@@ -8,26 +8,18 @@ import {
   FileText,
   Building,
   Mail,
-  Copy,
-  Check,
 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useVendorProfile } from "@/app/store/useVendorProductStore";
 import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+
 import Image from "next/image";
 
 export function ProfileBasicInfos() {
   const { data, isLoading, isError } = useVendorProfile();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [vendorId, setVendorId] = useState<string | null>(null);
-  const [copied, setCopied] = useState(false);
-  const [storeUrl, setStoreUrl] = useState("");
+
 
   // Get vendor ID from token on component mount
   useEffect(() => {
@@ -45,42 +37,8 @@ export function ProfileBasicInfos() {
     }
   }, []);
 
-  // Generate store URL when vendorId is available
-  useEffect(() => {
-    if (vendorId) {
-      // Determine if we're in development or production
-      const isDevelopment =
-        process.env.NODE_ENV === "development" ||
-        window.location.hostname === "localhost";
 
-      // Create base URL based on environment
-      const baseUrl = isDevelopment
-        ? `http://localhost:3000/store-front/${vendorId}`
-        : `https://vendor.brandsquare.store/store-front/${vendorId}`;
 
-      // Create a pretty, shareable URL (you could add store name here if available)
-      const prettyUrl = data?.data?.businessName
-        ? `${baseUrl}?store=${encodeURIComponent(data.data.businessName)}`
-        : baseUrl;
-
-      setStoreUrl(prettyUrl);
-    }
-  }, [vendorId, data?.data?.businessName]);
-
-  // Handle copy to clipboard
-  const handleCopyLink = () => {
-    if (storeUrl) {
-      navigator.clipboard
-        .writeText(storeUrl)
-        .then(() => {
-          setCopied(true);
-          setTimeout(() => setCopied(false), 2000);
-        })
-        .catch((err) => {
-          console.error("Failed to copy: ", err);
-        });
-    }
-  };
 
   // Map API response to expected vendor structure
   const vendor = data?.data ? {
@@ -147,6 +105,8 @@ export function ProfileBasicInfos() {
         <div className="size-[3rem] rounded-full bg-neutral-200 flex items-center justify-center">
           {vendor?.logo ? (
             <Image
+              width={100}
+              height={100}
               src={vendor.logo}
               alt={vendor.businessName || "Vendor"}
               className="size-full rounded-full object-cover"
@@ -165,52 +125,6 @@ export function ProfileBasicInfos() {
         </div>
       </div>
 
-      {/* STORE FRONT LINK - IMPROVED RESPONSIVE DESIGN */}
-      {storeUrl && (
-        <div className="mb-6 p-3 sm:p-4 bg-gray-50 rounded-lg border border-gray-200 w-[20rem] md:w-[100%]">
-          <div className="flex items-center gap-x-1 mb-3">
-            <Store size={15} color="#6A6B72" />
-            <span className="text-sm text-[#6A6B72] font-medium">
-              Store Front Link
-            </span>
-          </div>
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
-            <div className="flex w-[90%] bg-white p-2 rounded border border-gray-200 text-sm text-gray-700 overflow-hidden text-ellipsis">
-              <div className="truncate">{storeUrl}</div>
-            </div>
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={handleCopyLink}
-                    className="flex items-center gap-1 whitespace-nowrap min-w-[90px] justify-center"
-                  >
-                    {copied ? (
-                      <>
-                        <Check size={14} className="text-green-500" />
-                        <span className="text-green-500">Copied!</span>
-                      </>
-                    ) : (
-                      <>
-                        <Copy size={14} />
-                        <span>Copy</span>
-                      </>
-                    )}
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Copy store link to clipboard</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          </div>
-          <p className="text-xs text-gray-500 mt-2">
-            Share this link with customers to visit your store
-          </p>
-        </div>
-      )}
 
       {/* GRID LAYOUT FOR INFO SECTIONS */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-4">
@@ -257,13 +171,12 @@ export function ProfileBasicInfos() {
           </div>
           <div className="mt-2">
             <span
-              className={`px-2 py-1 text-xs rounded-full ${
-                vendor?.status === "Active"
+              className={`px-2 py-1 text-xs rounded-full ${vendor?.status === "Active"
                   ? "bg-green-100 text-green-800"
                   : vendor?.status === "Pending"
-                  ? "bg-yellow-100 text-yellow-800"
-                  : "bg-red-100 text-red-800"
-              }`}
+                    ? "bg-yellow-100 text-yellow-800"
+                    : "bg-red-100 text-red-800"
+                }`}
             >
               {vendor?.status || "Unknown"}
             </span>
@@ -289,8 +202,7 @@ export function ProfileBasicInfos() {
           </div>
           <p className="text-theme-gray mt-2">
             {vendor?.location
-              ? `${vendor.location.city || ""}, ${
-                  vendor.location.state || ""
+              ? `${vendor.location.city || ""}, ${vendor.location.state || ""
                 }, ${vendor.location.country || ""}`.replace(/^, |, $/g, "")
               : "No Location Available"}
           </p>

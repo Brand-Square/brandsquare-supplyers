@@ -4,10 +4,9 @@ import type React from "react";
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { ChevronLeft, Upload, Trash2, X } from "lucide-react";
+import { ChevronLeft, Upload, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import {
   Select,
   SelectContent,
@@ -21,7 +20,6 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import {
-  useCategories,
   uploadImage,
   useVendorProfile,
 } from "@/app/store/useVendorProductStore";
@@ -59,8 +57,6 @@ export default function ProfileEditor() {
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const [complianceDocuments, setComplianceDocuments] = useState<File[]>([]);
   const [documentPreviews, setDocumentPreviews] = useState<string[]>([]);
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [categoryInput, setCategoryInput] = useState("");
   const [notificationPreferences, setNotificationPreferences] = useState({
     salesAlert: true,
     promotions: true,
@@ -69,21 +65,18 @@ export default function ProfileEditor() {
   const [formData, setFormData] = useState({
     businessName: "",
     ownerName: "",
-    storeName: "",
     phoneNumber: "",
     businessType: "",
     taxIdentificationNumber: "",
     businessRegistrationNumber: "",
     businessAddress: "",
-    deliveryAddresses: "",
     country: "",
     state: "",
     city: "",
   });
 
-  // Fetch categories using TanStack Query
-  const { data: categoriesData, isLoading: categoriesLoading } =
-    useCategories();
+
+
   const { data: vendorProfileData } = useVendorProfile();
 
   useEffect(() => {
@@ -92,14 +85,12 @@ export default function ProfileEditor() {
 
       setFormData({
         businessName: vendor.businessName || "",
-        ownerName: vendor.ownerName?.email.split("@")[0] || "",
-        storeName: vendor.storeName || "",
+        ownerName: vendor.ownerName || "",
         phoneNumber: vendor.phoneNumber || "",
         businessType: vendor.businessType || "",
         taxIdentificationNumber: vendor.taxIdentificationNumber || "",
         businessRegistrationNumber: vendor.businessRegistrationNumber || "",
         businessAddress: vendor.businessAddress || "",
-        deliveryAddresses: vendor.deliveryDetails?.join(", ") || "",
         country: vendor.location?.country || "",
         state: vendor.location?.state || "",
         city: vendor.location?.city || "",
@@ -107,12 +98,7 @@ export default function ProfileEditor() {
     }
   }, [vendorProfileData]);
 
-  // Helper to get category name by id
-  const getCategoryName = (id: string) => {
-    return (
-      categoriesData?.data.categories.find((cat) => cat._id === id)?.name || id
-    );
-  };
+
 
   const { updateVendorProfile, isUpdateProfileLoading } = useInitAuthStore();
 
@@ -169,18 +155,7 @@ export default function ProfileEditor() {
     setDocumentPreviews((prev) => prev.filter((_, i) => i !== index));
   };
 
-  // Add product category by _id
-  const addCategory = (categoryId: string) => {
-    if (categoryId && !selectedCategories.includes(categoryId)) {
-      setSelectedCategories((prev) => [...prev, categoryId]);
-      setCategoryInput("");
-    }
-  };
 
-  // Remove product category by _id
-  const removeCategory = (categoryId: string) => {
-    setSelectedCategories((prev) => prev.filter((cat) => cat !== categoryId));
-  };
 
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
@@ -220,7 +195,6 @@ export default function ProfileEditor() {
     const updateData = {
       businessName: formData.businessName,
       ownerName: formData.ownerName,
-      storeName: formData.storeName,
       phoneNumber: formData.phoneNumber,
       businessType: formData.businessType as
         | "limitedLiability"
@@ -229,7 +203,6 @@ export default function ProfileEditor() {
       taxIdentificationNumber: formData.taxIdentificationNumber,
       businessRegistrationNumber: formData.businessRegistrationNumber,
       businessAddress: formData.businessAddress,
-      deliveryAddresses: formData.deliveryAddresses,
       location: {
         country: formData.country,
         state: formData.state,
@@ -237,15 +210,17 @@ export default function ProfileEditor() {
       },
       logo: logoUrl || undefined,
       complianceDocument: complianceDocUrls || undefined,
-      productCategories: selectedCategories,
       notificationPreferences: {
         salesAlert: notificationPreferences.salesAlert,
         promotions: notificationPreferences.promotions,
       },
     };
 
+    console.log("Sending payload:", JSON.stringify(updateData, null, 2));
+
     try {
-      await updateVendorProfile(updateData);
+      const response = await updateVendorProfile(updateData);
+      console.log("Server response:", response);
       toast.success("Profile updated successfully!");
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -325,17 +300,7 @@ export default function ProfileEditor() {
                   />
                 </div>
 
-                {/* Store Name */}
-                <div>
-                  <label className="block text-sm font-medium mb-2">
-                    Store Name
-                  </label>
-                  <Input
-                    name="storeName"
-                    value={formData.storeName}
-                    onChange={handleInputChange}
-                  />
-                </div>
+
 
                 {/* Phone Number */}
                 <div>
@@ -479,18 +444,7 @@ export default function ProfileEditor() {
                 </div>
 
                 {/* Delivery Addresses */}
-                <div>
-                  <label className="block text-sm font-medium mb-2">
-                    Delivery Addresses
-                  </label>
-                  <Textarea
-                    name="deliveryAddresses"
-                    value={formData.deliveryAddresses}
-                    onChange={handleInputChange}
-                    rows={3}
-                    placeholder="Enter multiple addresses separated by commas"
-                  />
-                </div>
+
               </div>
 
               {/* Location Section */}
@@ -550,56 +504,7 @@ export default function ProfileEditor() {
               <div className="space-y-4">
                 <h2 className="text-lg font-medium">Product Categories</h2>
 
-                <div>
-                  <label className="block text-sm font-medium mb-2">
-                    Select Categories
-                  </label>
-                  <div className="flex flex-wrap gap-2 mb-3">
-                    {selectedCategories.map((categoryId) => (
-                      <Badge
-                        key={categoryId}
-                        variant="secondary"
-                        className="px-3 py-1"
-                      >
-                        {getCategoryName(categoryId)}
-                        <button
-                          type="button"
-                          onClick={() => removeCategory(categoryId)}
-                          className="ml-2"
-                        >
-                          <X className="h-3 w-3" />
-                        </button>
-                      </Badge>
-                    ))}
-                  </div>
 
-                  <Select
-                    value={categoryInput}
-                    onValueChange={(value) => {
-                      addCategory(value);
-                    }}
-                    disabled={categoriesLoading}
-                  >
-                    <SelectTrigger>
-                      <SelectValue
-                        placeholder={
-                          categoriesLoading
-                            ? "Loading..."
-                            : "Select product categories"
-                        }
-                      />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {categoriesData?.data.categories
-                        .filter((cat) => !selectedCategories.includes(cat._id))
-                        .map((category) => (
-                          <SelectItem key={category._id} value={category._id}>
-                            {category.name}
-                          </SelectItem>
-                        ))}
-                    </SelectContent>
-                  </Select>
-                </div>
               </div>
 
               {/* Compliance Documents Section */}
@@ -783,17 +688,7 @@ export default function ProfileEditor() {
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
-                  {/* Store Name */}
-                  <div>
-                    <label className="block text-sm font-medium mb-2">
-                      Store Name
-                    </label>
-                    <Input
-                      name="storeName"
-                      value={formData.storeName}
-                      onChange={handleInputChange}
-                    />
-                  </div>
+
 
                   {/* Phone Number */}
                   <div>
@@ -942,18 +837,7 @@ export default function ProfileEditor() {
                 </div>
 
                 {/* Delivery Addresses */}
-                <div>
-                  <label className="block text-sm font-medium mb-2">
-                    Delivery Addresses
-                  </label>
-                  <Textarea
-                    name="deliveryAddresses"
-                    value={formData.deliveryAddresses}
-                    onChange={handleInputChange}
-                    rows={3}
-                    placeholder="Enter multiple addresses separated by commas"
-                  />
-                </div>
+
               </div>
 
               {/* Location Section */}
@@ -1013,61 +897,7 @@ export default function ProfileEditor() {
                 </div>
               </div>
 
-              {/* Product Categories Section */}
-              <div className="space-y-4">
-                <h2 className="text-xl font-medium">Product Categories</h2>
 
-                <div>
-                  <label className="block text-sm font-medium mb-2">
-                    Select Categories
-                  </label>
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {selectedCategories.map((categoryId) => (
-                      <Badge
-                        key={categoryId}
-                        variant="secondary"
-                        className="px-3 py-1.5"
-                      >
-                        {getCategoryName(categoryId)}
-                        <button
-                          type="button"
-                          onClick={() => removeCategory(categoryId)}
-                          className="ml-2"
-                        >
-                          <X className="h-3 w-3" />
-                        </button>
-                      </Badge>
-                    ))}
-                  </div>
-
-                  <Select
-                    value={categoryInput}
-                    onValueChange={(value) => {
-                      addCategory(value);
-                    }}
-                    disabled={categoriesLoading}
-                  >
-                    <SelectTrigger>
-                      <SelectValue
-                        placeholder={
-                          categoriesLoading
-                            ? "Loading..."
-                            : "Select product categories"
-                        }
-                      />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {categoriesData?.data.categories
-                        .filter((cat) => !selectedCategories.includes(cat._id))
-                        .map((category) => (
-                          <SelectItem key={category._id} value={category._id}>
-                            {category.name}
-                          </SelectItem>
-                        ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
 
               {/* Compliance Documents Section */}
               <div className="space-y-4">

@@ -6,7 +6,8 @@ import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.share
 import axiosInstance from "../api/axiosClient";
 
 enum API_URL {
-  BASE = "https://api.brandsquare.store/api/auth",
+  BASE = "http://localhost:8080/api/auth",
+  // BASE = "https://api.brandsquare.store/api/auth",
   LOGIN = "/login/",
   REGISTER = "/register/",
   VERIFY_OTP = "/verify-otp/",
@@ -142,14 +143,11 @@ interface ProfileUpdateData {
   phoneNumber: string;
   ownerName: string;
   businessName: string;
-  storeName: string;
-  productCategories: string[];
   notificationPreferences: {
     salesAlert?: boolean;
     promotions?: boolean;
   };
   complianceDocument?: string[];
-  deliveryAddresses?: string;
   location?: {
     country?: string;
     state?: string;
@@ -628,50 +626,46 @@ const useInitAuthStore = create<AuthStore>((set, get) => {
         set({ isUpdateProfileLoading: true });
         const formData = new FormData();
 
-        // Append all fields
-        Object.entries(data).forEach(([key, value]) => {
-          if (value === undefined || value === null) return;
+       
+        if (data.complianceDocument && Array.isArray(data.complianceDocument)) {
+          data.complianceDocument = data.complianceDocument.filter(
+            doc => doc && typeof doc === 'string' && doc.trim() !== ''
+          );
+          if (data.complianceDocument.length === 0) delete data.complianceDocument;
+        }
 
-          if (typeof value === 'object' && !(value instanceof File)) {
-            formData.append(key, JSON.stringify(value));
-          } else if (Array.isArray(value)) {
-            value.forEach((item, index) => {
-              if (item instanceof File) {
-                formData.append(`${key}[${index}]`, item);
-              }
-            });
-            if (value.length > 0 && !(value[0] instanceof File)) {
-              formData.append(key, JSON.stringify(value));
-            }
-          } else {
-            formData.append(key, value);
+      
+        Object.entries(data).forEach(([key, value]) => {
+          if (value == null) return; 
+          if (value instanceof File) formData.append(key, value);
+          else if (Array.isArray(value)) {
+            value.forEach(item => item instanceof File && formData.append(key, item));
           }
+          else formData.append(key, typeof value === 'object' ? JSON.stringify(value) : value);
         });
 
         const response = await axiosInstance.put(
-          "/supplier-user/profile/update",
+          "/profile-update/supplier",
           formData,
           {
             headers: {
               Authorization: `Bearer ${token}`,
               "Content-Type": "multipart/form-data",
-            },
+            }
           }
         );
 
-        if (response.data.isSuccess) {
-          if (response.data.data) {
-            localStorage.setItem(
-              "vendorDetails",
-              JSON.stringify(response.data.data)
-            );
-          }
-          return response.data.data;
+        if (response.data?.data) {
+          localStorage.setItem("vendorDetails", JSON.stringify(response.data.data));
         }
-        throw new Error(response.data.message || "Failed to update profile");
-      } catch (error) {
-        console.error("Update error:", error);
-        throw error;
+
+        return response.data?.data;
+      } catch (error: any) {
+        const message = error.response?.data?.message
+          || error.message
+          || "Profile update failed";
+        console.error("Update error:", message);
+        throw new Error(message);
       } finally {
         set({ isUpdateProfileLoading: false });
       }

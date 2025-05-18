@@ -380,7 +380,7 @@ export const useVendorProfile = () => {
         }
 
         const userData = JSON.parse(storedData);
-        const supplierId = userData?.userDetails?._id;
+        const supplierId = userData?._id || userData?.userDetails?.id;
 
         console.log('supplierId', supplierId);
 

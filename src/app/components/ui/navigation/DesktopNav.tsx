@@ -27,7 +27,7 @@ const DesktopNav = () => {
         </div>
 
         <nav className="hidden md:flex items-center space-x-6">
-          <Link href="/" className="text-lg font-medium">
+          <Link href="#home" className="text-lg font-medium">
             Home
           </Link>
           <Link href="#why-choose" className="text-lg font-medium">

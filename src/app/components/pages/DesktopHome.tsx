@@ -73,7 +73,7 @@ export default function DesktopHome() {
     <div className="flex min-h-screen flex-col">
       <DesktopNav />
 
-      <main className="flex-1">
+      <main className="flex-1" id='home'>
         {/* Hero Section */}
         <section id="home" className="bg-[#D9D9D9] overflow-hidden flex items-center justify-between px-4 lg:px-8 mb-8 py-12">
           <div className="w-full lg:w-1/2 px-4">
@@ -104,7 +104,7 @@ export default function DesktopHome() {
         </section>
 
         {/* Why Trust Section */}
-        <section className="px-4 lg:px-8 py-12">
+        <section className="px-4 lg:px-8 py-12" id='why-choose'>
           <div className="flex flex-col lg:flex-row items-center gap-8">
             <div className="w-full h-full lg:w-1/2">
               <Image
@@ -182,7 +182,7 @@ export default function DesktopHome() {
         </section>
 
         {/* Why Different Section */}
-        <section className="py-12 px-4">
+        <section className="py-12 px-4" id='features'>
           <div className="container mx-auto">
             <h2 className="text-3xl lg:text-[40px] font-bold text-center mb-12">
               Why is Brandsquare Different?

@@ -4,6 +4,7 @@ import { useState, useRef } from "react";
 import { CloudUpload, X } from "lucide-react";
 import Image from "next/image";
 import { Button } from "../button";
+import { toast } from "react-toastify";
 
 interface ImageUploaderProps {
   setFiles: React.Dispatch<React.SetStateAction<File[]>>;
@@ -31,7 +32,7 @@ export function ImageUploader({
       if (!isImage(file)) return;
 
       if (file.size > maxFileSize) {
-        alert(`"${file.name}" is too large. Max file size is 1MB.`);
+        toast.warning(`"${file.name}" is too large. Max file size is 1MB.`);
         return;
       }
 
@@ -50,6 +51,7 @@ export function ImageUploader({
     setFiles((prev) => [...prev, ...newFiles]);
   };
 
+  // ... rest of your code remains exactly the same ...
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     handleFileChange(e.target.files);
   };

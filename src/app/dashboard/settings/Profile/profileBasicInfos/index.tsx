@@ -88,7 +88,7 @@ export function ProfileBasicInfos() {
     );
   }
 
-  // If no vendor data is available but we're not in an error state, show skeleton instead of error
+  
   if (!vendor && !isLoading) {
     return <ProfileSkeleton />;
   }

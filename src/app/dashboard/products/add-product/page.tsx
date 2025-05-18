@@ -63,7 +63,7 @@ useEffect(() => {
     );
   }
 
-  console.log('Showing product form (profile complete)'); // [DEBUG]
+  console.log('Showing product form (profile complete)'); 
   return (
     <div>
       <div className="flex items-center justify-between mx-auto max-w-[60rem]">

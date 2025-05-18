@@ -6,8 +6,10 @@ import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.share
 import axiosInstance from "../api/axiosClient";
 
 enum API_URL {
-  // BASE = "http://localhost:8080/api/auth",
-  BASE = "https://api.brandsquare.store/api/auth",
+  BASE = "http://localhost:8080/api/auth",
+  BASE1 = "http://localhost:8080/api",
+  // BASE = "https://api.brandsquare.store/api/auth",
+  // BASE1 = "https://api.brandsquare.store/api",
   LOGIN = "/login/",
   REGISTER = "/register/",
   VERIFY_OTP = "/verify-otp/",
@@ -89,7 +91,18 @@ interface AuthStore extends AuthenticateVendorStore {
   updateVendorProfile: (data: ProfileUpdateData) => Promise<any>;
   isUpdateProfileLoading: boolean;
   setUpdateProfileLoading: (loading: boolean) => void;
+  refreshToken: () => Promise<{
+    token: string;
+    user: any;
+    isProfileComplete: boolean;
+    supplier?: {
+      _id: string;
+      businessName: string;
+    };
+  }>;
 }
+
+
 
 interface verifyOtp {
   email: string;
@@ -626,7 +639,7 @@ const useInitAuthStore = create<AuthStore>((set, get) => {
         set({ isUpdateProfileLoading: true });
         const formData = new FormData();
 
-       
+
         if (data.complianceDocument && Array.isArray(data.complianceDocument)) {
           data.complianceDocument = data.complianceDocument.filter(
             doc => doc && typeof doc === 'string' && doc.trim() !== ''
@@ -634,9 +647,9 @@ const useInitAuthStore = create<AuthStore>((set, get) => {
           if (data.complianceDocument.length === 0) delete data.complianceDocument;
         }
 
-      
+
         Object.entries(data).forEach(([key, value]) => {
-          if (value == null) return; 
+          if (value == null) return;
           if (value instanceof File) formData.append(key, value);
           else if (Array.isArray(value)) {
             value.forEach(item => item instanceof File && formData.append(key, item));
@@ -671,6 +684,52 @@ const useInitAuthStore = create<AuthStore>((set, get) => {
       }
     },
 
+    refreshToken: async () => {
+      try {
+        console.log("Initiating token refresh request");
+        const token = localStorage.getItem("token");
+        const response = await axios.get(
+          `${API_URL.BASE1}/shared-auth/refresh-token`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        const refreshData = response.data;
+        console.log("Received refresh token response:", refreshData);
+
+        const currentVendorDetails = localStorage.getItem("vendorDetails")
+          ? JSON.parse(localStorage.getItem("vendorDetails")!)
+          : {};
+        console.log("Current vendor details from localStorage:", currentVendorDetails);
+
+        const updatedVendorDetails = {
+          ...currentVendorDetails,
+          token: refreshData.token,
+          user: refreshData.user,
+          isProfileComplete: refreshData.isProfileComplete,
+          data: {
+            ...(currentVendorDetails.data || {}),
+            details: {
+              ...(currentVendorDetails.data?.details || {}),
+              businessName: refreshData.supplier?.businessName,
+              isProfileComplete: refreshData.isProfileComplete,
+            }
+          }
+        };
+        console.log("Updated vendor details:", updatedVendorDetails);
+
+        localStorage.setItem("vendorDetails", JSON.stringify(updatedVendorDetails));
+        console.log("Vendor details saved to localStorage");
+
+        return refreshData;
+      } catch (error) {
+        console.error("Token refresh failed:", error);
+        throw error;
+      }
+    },
     isUpdateProfileLoading: false,
     setUpdateProfileLoading: (loading: boolean) =>
       set({ isUpdateProfileLoading: loading }),

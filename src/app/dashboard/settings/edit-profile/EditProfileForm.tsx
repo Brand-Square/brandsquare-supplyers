@@ -98,7 +98,7 @@ export default function ProfileEditor() {
 
 
 
-  const { updateVendorProfile, isUpdateProfileLoading } = useInitAuthStore();
+  const { updateVendorProfile, isUpdateProfileLoading, refreshToken, } = useInitAuthStore();
 
   // Handle input change
   const handleInputChange = (
@@ -218,6 +218,7 @@ export default function ProfileEditor() {
 
     try {
       const response = await updateVendorProfile(updateData);
+      await refreshToken()
       console.log("Server response:", response);
       toast.success("Profile updated successfully!");
     } catch (error: unknown) {

@@ -631,31 +631,139 @@ const useInitAuthStore = create<AuthStore>((set, get) => {
       }
     },
 
-    updateVendorProfile: async (data) => {
+    // updateVendorProfile: async (data) => {
+    //   const token = localStorage.getItem("token");
+    //   if (!token) throw new Error("No authentication token found");
+
+    //   try {
+    //     set({ isUpdateProfileLoading: true });
+    //     const formData = new FormData();
+
+    //     // Clean up complianceDocument array
+    //     if (data.complianceDocument && Array.isArray(data.complianceDocument)) {
+    //       data.complianceDocument = data.complianceDocument.filter(
+    //         (doc) => doc && typeof doc === "string" && doc.trim() !== ""
+    //       );
+    //       if (data.complianceDocument.length === 0) {
+    //         delete data.complianceDocument;
+    //       }
+    //     }
+
+    //     // Append data to FormData
+    //     Object.entries(data).forEach(([key, value]) => {
+    //       if (value == null) return;
+    //       if (value instanceof File) {
+    //         formData.append(key, value);
+    //       } else if (Array.isArray(value)) {
+    //         // Handle arrays (e.g., complianceDocument)
+    //         value.forEach((item, index) => {
+    //           if (item instanceof File) {
+    //             formData.append(key, item); // Append files with the same key
+    //           } else if (typeof item === "string" && item.trim() !== "") {
+    //             formData.append(`${key}[${index}]`, item); // Append strings with indexed keys
+    //           }
+    //         });
+    //       } else if (typeof value === "object") {
+    //         formData.append(key, JSON.stringify(value));
+    //       } else {
+    //         formData.append(key, value);
+    //       }
+    //     });
+
+
+    //     const response = await axiosInstance.put(
+    //       "/profile-update/supplier",
+    //       formData,
+    //       {
+    //         headers: {
+    //           Authorization: `Bearer ${token}`,
+    //           "Content-Type": "multipart/form-data",
+    //         },
+    //       }
+    //     );
+
+    //     if (response.data?.data) {
+    //       localStorage.setItem("vendorDetails", JSON.stringify(response.data.data));
+    //     }
+
+    //     return response.data?.data;
+    //   } catch (error: any) {
+    //     const message =
+    //       error.response?.data?.message || error.message || "Profile update failed";
+    //     console.error("Update error:", message);
+    //     throw new Error(message);
+    //   } finally {
+    //     set({ isUpdateProfileLoading: false });
+    //   }
+    // },
+
+    updateVendorProfile: async (data: ProfileUpdateData) => {
+      console.log(data, "data");
       const token = localStorage.getItem("token");
-      if (!token) throw new Error("No authentication token found");
+      if (!token) {
+        throw new Error("No authentication token found");
+      }
 
       try {
         set({ isUpdateProfileLoading: true });
         const formData = new FormData();
 
+        // Always append all fields, even if empty strings
+        formData.append("businessName", data.businessName ?? "");
+        formData.append("ownerName", data.ownerName ?? "");
+        formData.append("phoneNumber", data.phoneNumber ?? "");
+        formData.append("businessType", data.businessType ?? "");
 
-        if (data.complianceDocument && Array.isArray(data.complianceDocument)) {
-          data.complianceDocument = data.complianceDocument.filter(
-            doc => doc && typeof doc === 'string' && doc.trim() !== ''
-          );
-          if (data.complianceDocument.length === 0) delete data.complianceDocument;
+  
+        
+
+      
+
+        // No else needed here, if the array is empty or not provided, the key won't be appended, which is standard for empty multipart fields.
+
+        // notificationPreferences: always send as stringified object
+        // formData.append("notificationPreferences", data.notificationPreferences.salesAlert)
+        formData.append(
+          "notificationPreferences",
+          JSON.stringify({
+            salesAlert: data.notificationPreferences?.salesAlert
+              ? "true"
+              : "false",
+            promotions: data.notificationPreferences?.promotions
+              ? "true"
+              : "false",
+          })
+        );
+
+        // Always append these fields, even if empty
+        formData.append("businessAddress", data.businessAddress ?? "");
+        formData.append(
+          "businessRegistrationNumber",
+          data.businessRegistrationNumber ?? ""
+        );
+        formData.append(
+          "taxIdentificationNumber",
+          data.taxIdentificationNumber ?? ""
+        );
+        formData.append("location", JSON.stringify(data.location ?? {}));
+
+        // logo: send as empty string if not provided
+        if (data.logo) {
+          formData.append("logo", data.logo);
+        } else {
+          formData.append("logo", "");
         }
 
+        // complianceDocument: send as empty string if not provided
+        // complianceDocument: append each URL if provided, otherwise send empty string
 
-        Object.entries(data).forEach(([key, value]) => {
-          if (value == null) return;
-          if (value instanceof File) formData.append(key, value);
-          else if (Array.isArray(value)) {
-            value.forEach(item => item instanceof File && formData.append(key, item));
-          }
-          else formData.append(key, typeof value === 'object' ? JSON.stringify(value) : value);
-        });
+        const compDoc: string[] = [];
+        if (data.complianceDocument && Array.isArray(data.complianceDocument)) {
+          data.complianceDocument.forEach((docUrl) => {
+            compDoc.push(docUrl);
+          });
+          formData.append("complianceDocument", JSON.stringify(compDoc));
+        }
 
         const response = await axiosInstance.put(
           "/profile-update/supplier",
@@ -664,25 +772,38 @@ const useInitAuthStore = create<AuthStore>((set, get) => {
             headers: {
               Authorization: `Bearer ${token}`,
               "Content-Type": "multipart/form-data",
-            }
+            },
           }
         );
 
-        if (response.data?.data) {
-          localStorage.setItem("vendorDetails", JSON.stringify(response.data.data));
+        if (response.data.isSuccess) {
+          // Update local storage with new vendor details if they're returned
+          if (response.data.data?.details) {
+            localStorage.setItem(
+              "vendorDetails",
+              JSON.stringify(response.data.data.details)
+            );
+          }
+          toast.success("Profile updated successfully");
+          set({ isUpdateProfileLoading: false });
+          return Promise.resolve();
         }
 
-        return response.data?.data;
-      } catch (error: any) {
-        const message = error.response?.data?.message
-          || error.message
-          || "Profile update failed";
-        console.error("Update error:", message);
-        throw new Error(message);
-      } finally {
         set({ isUpdateProfileLoading: false });
+        return Promise.reject("Failed to update profile");
+      } catch (error: any) {
+        console.log(error, "error");
+        set({ isUpdateProfileLoading: false });
+        toast.error(
+          error?.response?.data?.message || "Failed to update profile"
+        );
+        return Promise.reject(
+          error?.response?.data?.message || "Failed to update profile"
+        );
       }
     },
+
+
 
     refreshToken: async () => {
       try {

@@ -25,7 +25,7 @@ export const DashboardHeader = () => {
       </div>
       <div className="flex items-center max-sm:gap-1 gap-x-4">
         <Link
-          href={"#"}
+          href={"/dashboard/support"}
           className="rounded-full bg-theme-blue grid place-items-center size-[1.8rem]"
         >
           <QuestionMark />

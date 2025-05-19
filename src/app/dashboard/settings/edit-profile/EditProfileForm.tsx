@@ -923,7 +923,7 @@ export default function ProfileEditor() {
 
                 <div className="grid grid-cols-2 gap-4">
                   {/* State */}
-                  <div>n
+                  <div>
                     <label className="block text-sm font-medium mb-2">
                       Province
                     </label>

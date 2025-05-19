@@ -38,12 +38,29 @@ export function ProfileBasicInfos() {
   }, []);
 
 
+  function cleanLogoUrl(logoUrl: string) {
+    if (!logoUrl) return null;
+    if (logoUrl.includes('https://api.brandsquare.store/http://')) {
+      return logoUrl.replace('https://api.brandsquare.store/http://', 'http://');
+    }
+    if (logoUrl.startsWith('http://') || logoUrl.startsWith('https://')) {
+      return logoUrl;
+    }
+
+
+    if (logoUrl.startsWith('/')) {
+      return `https://api.brandsquare.store${logoUrl}`;
+    }
+
+    return null;
+  }
 
 
   // Map API response to expected vendor structure
   const vendor = data?.data ? {
     ...data.data,
     storeName: data.data.businessName,
+    logo: cleanLogoUrl(data.data.logo),
     ownerName: data.data.user?.email.split('@')[0] || "Vendor",
     phoneNumber: data.data.phoneNumber || "No Phone Number Available",
     location: data.data.location || {
@@ -88,7 +105,7 @@ export function ProfileBasicInfos() {
     );
   }
 
-  
+
   if (!vendor && !isLoading) {
     return <ProfileSkeleton />;
   }
@@ -172,10 +189,10 @@ export function ProfileBasicInfos() {
           <div className="mt-2">
             <span
               className={`px-2 py-1 text-xs rounded-full ${vendor?.status === "Active"
-                  ? "bg-green-100 text-green-800"
-                  : vendor?.status === "Pending"
-                    ? "bg-yellow-100 text-yellow-800"
-                    : "bg-red-100 text-red-800"
+                ? "bg-green-100 text-green-800"
+                : vendor?.status === "Pending"
+                  ? "bg-yellow-100 text-yellow-800"
+                  : "bg-red-100 text-red-800"
                 }`}
             >
               {vendor?.status || "Unknown"}

@@ -714,10 +714,10 @@ const useInitAuthStore = create<AuthStore>((set, get) => {
         formData.append("phoneNumber", data.phoneNumber ?? "");
         formData.append("businessType", data.businessType ?? "");
 
-  
-        
 
-      
+
+
+
 
         // No else needed here, if the array is empty or not provided, the key won't be appended, which is standard for empty multipart fields.
 
@@ -808,13 +808,10 @@ const useInitAuthStore = create<AuthStore>((set, get) => {
     refreshToken: async () => {
       try {
         console.log("Initiating token refresh request");
-        const token = localStorage.getItem("token");
         const response = await axios.get(
           `${API_URL.BASE1}/shared-auth/refresh-token`,
           {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+            withCredentials: true,
           }
         );
 
@@ -824,7 +821,6 @@ const useInitAuthStore = create<AuthStore>((set, get) => {
         const currentVendorDetails = localStorage.getItem("vendorDetails")
           ? JSON.parse(localStorage.getItem("vendorDetails")!)
           : {};
-        console.log("Current vendor details from localStorage:", currentVendorDetails);
 
         const updatedVendorDetails = {
           ...currentVendorDetails,
@@ -840,17 +836,16 @@ const useInitAuthStore = create<AuthStore>((set, get) => {
             }
           }
         };
-        console.log("Updated vendor details:", updatedVendorDetails);
 
         localStorage.setItem("vendorDetails", JSON.stringify(updatedVendorDetails));
-        console.log("Vendor details saved to localStorage");
-
         return refreshData;
       } catch (error) {
         console.error("Token refresh failed:", error);
         throw error;
       }
     },
+
+
     isUpdateProfileLoading: false,
     setUpdateProfileLoading: (loading: boolean) =>
       set({ isUpdateProfileLoading: loading }),

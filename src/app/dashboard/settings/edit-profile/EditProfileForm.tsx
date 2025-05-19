@@ -531,7 +531,7 @@ export default function ProfileEditor() {
                 {/* State */}
                 <div>
                   <label className="block text-sm font-medium mb-2">
-                    State
+                    Province
                   </label>
                   <Input
                     name="state"
@@ -923,9 +923,9 @@ export default function ProfileEditor() {
 
                 <div className="grid grid-cols-2 gap-4">
                   {/* State */}
-                  <div>
+                  <div>n
                     <label className="block text-sm font-medium mb-2">
-                      State
+                      Province
                     </label>
                     <Input
                       name="state"

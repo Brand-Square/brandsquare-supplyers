@@ -98,7 +98,7 @@ export default function ProfileEditor() {
 
 
 
-  const { updateVendorProfile, isUpdateProfileLoading, refreshToken, } = useInitAuthStore();
+  const { updateVendorProfile, isUpdateProfileLoading, } = useInitAuthStore();
 
   // Handle input change
   const handleInputChange = (
@@ -109,7 +109,7 @@ export default function ProfileEditor() {
   };
 
 
-    // Handle logo upload
+  // Handle logo upload
   const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
@@ -148,12 +148,46 @@ export default function ProfileEditor() {
     }
   };
 
-    // Remove compliance document
+  // Remove compliance document
   const removeDocument = (index: number) => {
     setComplianceDocuments((prev) => prev.filter((_, i) => i !== index));
     setDocumentPreviews((prev) => prev.filter((_, i) => i !== index));
   };
 
+
+const isFormValid = () => {
+  // Required fields validation
+  const requiredFieldsValid = 
+    formData.businessName.trim() !== "" &&
+    formData.ownerName.trim() !== "" &&
+    formData.phoneNumber.trim() !== "" &&
+    formData.businessType.trim() !== "" &&
+    formData.businessAddress.trim() !== "" &&
+    formData.country.trim() !== "" &&
+    formData.state.trim() !== "" &&
+    formData.city.trim() !== "";
+
+  // Phone number validation (basic - at least 6 digits)
+  const phoneRegex = /\d{6,}/;
+  const phoneValid = phoneRegex.test(formData.phoneNumber);
+
+  // Business registration number validation (if provided)
+  const registrationValid = 
+    formData.businessRegistrationNumber.trim() === "" || 
+    formData.businessRegistrationNumber.trim().length >= 6;
+
+  // Tax ID validation (if provided)
+  const taxIdValid = 
+    formData.taxIdentificationNumber.trim() === "" || 
+    formData.taxIdentificationNumber.trim().length >= 6;
+
+  return (
+    requiredFieldsValid &&
+    phoneValid &&
+    registrationValid &&
+    taxIdValid
+  );
+};
 
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -216,7 +250,7 @@ export default function ProfileEditor() {
 
     try {
       await updateVendorProfile(updateData);
-      await refreshToken();
+     
       toast.success("Profile updated successfully!");
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -623,7 +657,7 @@ export default function ProfileEditor() {
                 <Button
                   type="submit"
                   className="bg-navy-blue hover:bg-navy-blue/90"
-                  disabled={isUpdateProfileLoading}
+                  disabled={isUpdateProfileLoading || !isFormValid()}
                 >
                   {isUpdateProfileLoading ? "Saving..." : "Save Changes"}
                 </Button>
@@ -1015,7 +1049,7 @@ export default function ProfileEditor() {
                 <Button
                   type="submit"
                   className="bg-blue-900 hover:bg-blue-900/90"
-                  disabled={isUpdateProfileLoading}
+                  disabled={isUpdateProfileLoading || !isFormValid()}
                 >
                   {isUpdateProfileLoading ? "Saving..." : "Save Changes"}
                 </Button>

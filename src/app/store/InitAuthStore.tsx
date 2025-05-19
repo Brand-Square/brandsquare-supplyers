@@ -6,10 +6,10 @@ import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.share
 import axiosInstance from "../api/axiosClient";
 
 enum API_URL {
-  // BASE = "http://localhost:8080/api/auth",
-  // BASE1 = "http://localhost:8080/api",
-  BASE = "https://api.brandsquare.store/api/auth",
-  BASE1 = "https://api.brandsquare.store/api",
+  BASE = "http://localhost:8080/api/auth",
+  BASE1 = "http://localhost:8080/api",
+  // BASE = "https://api.brandsquare.store/api/auth",
+  // BASE1 = "https://api.brandsquare.store/api",
   LOGIN = "/login/",
   REGISTER = "/register/",
   VERIFY_OTP = "/verify-otp/",
@@ -631,74 +631,7 @@ const useInitAuthStore = create<AuthStore>((set, get) => {
       }
     },
 
-    // updateVendorProfile: async (data) => {
-    //   const token = localStorage.getItem("token");
-    //   if (!token) throw new Error("No authentication token found");
-
-    //   try {
-    //     set({ isUpdateProfileLoading: true });
-    //     const formData = new FormData();
-
-    //     // Clean up complianceDocument array
-    //     if (data.complianceDocument && Array.isArray(data.complianceDocument)) {
-    //       data.complianceDocument = data.complianceDocument.filter(
-    //         (doc) => doc && typeof doc === "string" && doc.trim() !== ""
-    //       );
-    //       if (data.complianceDocument.length === 0) {
-    //         delete data.complianceDocument;
-    //       }
-    //     }
-
-    //     // Append data to FormData
-    //     Object.entries(data).forEach(([key, value]) => {
-    //       if (value == null) return;
-    //       if (value instanceof File) {
-    //         formData.append(key, value);
-    //       } else if (Array.isArray(value)) {
-    //         // Handle arrays (e.g., complianceDocument)
-    //         value.forEach((item, index) => {
-    //           if (item instanceof File) {
-    //             formData.append(key, item); // Append files with the same key
-    //           } else if (typeof item === "string" && item.trim() !== "") {
-    //             formData.append(`${key}[${index}]`, item); // Append strings with indexed keys
-    //           }
-    //         });
-    //       } else if (typeof value === "object") {
-    //         formData.append(key, JSON.stringify(value));
-    //       } else {
-    //         formData.append(key, value);
-    //       }
-    //     });
-
-
-    //     const response = await axiosInstance.put(
-    //       "/profile-update/supplier",
-    //       formData,
-    //       {
-    //         headers: {
-    //           Authorization: `Bearer ${token}`,
-    //           "Content-Type": "multipart/form-data",
-    //         },
-    //       }
-    //     );
-
-    //     if (response.data?.data) {
-    //       localStorage.setItem("vendorDetails", JSON.stringify(response.data.data));
-    //     }
-
-    //     return response.data?.data;
-    //   } catch (error: any) {
-    //     const message =
-    //       error.response?.data?.message || error.message || "Profile update failed";
-    //     console.error("Update error:", message);
-    //     throw new Error(message);
-    //   } finally {
-    //     set({ isUpdateProfileLoading: false });
-    //   }
-    // },
-
     updateVendorProfile: async (data: ProfileUpdateData) => {
-      console.log(data, "data");
       const token = localStorage.getItem("token");
       if (!token) {
         throw new Error("No authentication token found");
@@ -708,34 +641,18 @@ const useInitAuthStore = create<AuthStore>((set, get) => {
         set({ isUpdateProfileLoading: true });
         const formData = new FormData();
 
-        // Always append all fields, even if empty strings
+       
         formData.append("businessName", data.businessName ?? "");
         formData.append("ownerName", data.ownerName ?? "");
         formData.append("phoneNumber", data.phoneNumber ?? "");
         formData.append("businessType", data.businessType ?? "");
-
-
-
-
-
-
-        // No else needed here, if the array is empty or not provided, the key won't be appended, which is standard for empty multipart fields.
-
-        // notificationPreferences: always send as stringified object
-        // formData.append("notificationPreferences", data.notificationPreferences.salesAlert)
         formData.append(
           "notificationPreferences",
           JSON.stringify({
-            salesAlert: data.notificationPreferences?.salesAlert
-              ? "true"
-              : "false",
-            promotions: data.notificationPreferences?.promotions
-              ? "true"
-              : "false",
+            salesAlert: data.notificationPreferences?.salesAlert ? "true" : "false",
+            promotions: data.notificationPreferences?.promotions ? "true" : "false",
           })
         );
-
-        // Always append these fields, even if empty
         formData.append("businessAddress", data.businessAddress ?? "");
         formData.append(
           "businessRegistrationNumber",
@@ -747,22 +664,16 @@ const useInitAuthStore = create<AuthStore>((set, get) => {
         );
         formData.append("location", JSON.stringify(data.location ?? {}));
 
-        // logo: send as empty string if not provided
+       
         if (data.logo) {
           formData.append("logo", data.logo);
         } else {
           formData.append("logo", "");
         }
 
-        // complianceDocument: send as empty string if not provided
-        // complianceDocument: append each URL if provided, otherwise send empty string
-
-        const compDoc: string[] = [];
+        
         if (data.complianceDocument && Array.isArray(data.complianceDocument)) {
-          data.complianceDocument.forEach((docUrl) => {
-            compDoc.push(docUrl);
-          });
-          formData.append("complianceDocument", JSON.stringify(compDoc));
+          formData.append("complianceDocument", JSON.stringify(data.complianceDocument));
         }
 
         const response = await axiosInstance.put(
@@ -777,22 +688,32 @@ const useInitAuthStore = create<AuthStore>((set, get) => {
         );
 
         if (response.data.isSuccess) {
-          // Update local storage with new vendor details if they're returned
-          if (response.data.data?.details) {
+         
+          if (response.data.data) {
             localStorage.setItem(
               "vendorDetails",
-              JSON.stringify(response.data.data.details)
+              JSON.stringify(response.data.data)
             );
           }
+
+          
+          const userData = JSON.parse(localStorage.getItem("user") || "{}");
+          if (userData) {
+            const updatedUser = {
+              ...userData,
+              isProfileComplete: response.data.data.isProfileComplete,
+            };
+            localStorage.setItem("user", JSON.stringify(updatedUser));
+          }
+
           toast.success("Profile updated successfully");
           set({ isUpdateProfileLoading: false });
-          return Promise.resolve();
+          return Promise.resolve(response.data); 
         }
 
         set({ isUpdateProfileLoading: false });
         return Promise.reject("Failed to update profile");
       } catch (error: any) {
-        console.log(error, "error");
         set({ isUpdateProfileLoading: false });
         toast.error(
           error?.response?.data?.message || "Failed to update profile"
@@ -807,45 +728,42 @@ const useInitAuthStore = create<AuthStore>((set, get) => {
 
     refreshToken: async () => {
       try {
-        console.log("Initiating token refresh request");
-        const response = await axios.get(
-          `${API_URL.BASE1}/shared-auth/refresh-token`,
+        // Use plain fetch API to avoid axios issues
+        const response = await fetch(
+          "https://api.brandsquare.store/api/shared-auth/refresh-token",
           {
-            withCredentials: true,
+            method: 'GET',
+            credentials: 'include', // This sends cookies
+            headers: {
+              'Authorization': `Bearer ${localStorage.getItem('token')}`,
+              'Content-Type': 'application/json'
+            }
           }
         );
 
-        const refreshData = response.data;
-        console.log("Received refresh token response:", refreshData);
+        if (!response.ok) throw new Error('Refresh failed');
 
-        const currentVendorDetails = localStorage.getItem("vendorDetails")
-          ? JSON.parse(localStorage.getItem("vendorDetails")!)
-          : {};
+        const data = await response.json();
 
-        const updatedVendorDetails = {
-          ...currentVendorDetails,
-          token: refreshData.token,
-          user: refreshData.user,
-          isProfileComplete: refreshData.isProfileComplete,
+        // Update all storage locations
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('vendorDetails', JSON.stringify({
+          token: data.token,
+          user: data.user,
+          isProfileComplete: data.isProfileComplete,
           data: {
-            ...(currentVendorDetails.data || {}),
             details: {
-              ...(currentVendorDetails.data?.details || {}),
-              businessName: refreshData.supplier?.businessName,
-              isProfileComplete: refreshData.isProfileComplete,
+              businessName: data.supplier?.businessName
             }
           }
-        };
+        }));
 
-        localStorage.setItem("vendorDetails", JSON.stringify(updatedVendorDetails));
-        return refreshData;
+        return data;
       } catch (error) {
-        console.error("Token refresh failed:", error);
+        console.error('Refresh failed:', error);
         throw error;
       }
     },
-
-
     isUpdateProfileLoading: false,
     setUpdateProfileLoading: (loading: boolean) =>
       set({ isUpdateProfileLoading: loading }),

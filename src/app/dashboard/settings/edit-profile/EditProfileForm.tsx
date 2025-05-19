@@ -98,7 +98,7 @@ export default function ProfileEditor() {
 
 
 
-  const { updateVendorProfile, isUpdateProfileLoading } = useInitAuthStore();
+  const { updateVendorProfile, isUpdateProfileLoading, refreshToken, } = useInitAuthStore();
 
   // Handle input change
   const handleInputChange = (
@@ -108,7 +108,8 @@ export default function ProfileEditor() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Handle logo upload
+
+    // Handle logo upload
   const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
@@ -147,7 +148,7 @@ export default function ProfileEditor() {
     }
   };
 
-  // Remove compliance document
+    // Remove compliance document
   const removeDocument = (index: number) => {
     setComplianceDocuments((prev) => prev.filter((_, i) => i !== index));
     setDocumentPreviews((prev) => prev.filter((_, i) => i !== index));
@@ -155,7 +156,6 @@ export default function ProfileEditor() {
 
 
 
-  // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -214,11 +214,9 @@ export default function ProfileEditor() {
       },
     };
 
-    console.log("Sending payload:", JSON.stringify(updateData, null, 2));
-
     try {
-      const response = await updateVendorProfile(updateData);
-      console.log("Server response:", response);
+      await updateVendorProfile(updateData);
+      await refreshToken();
       toast.success("Profile updated successfully!");
     } catch (error: unknown) {
       if (error instanceof Error) {

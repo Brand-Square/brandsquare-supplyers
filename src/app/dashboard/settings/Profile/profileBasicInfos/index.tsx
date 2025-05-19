@@ -88,7 +88,7 @@ export function ProfileBasicInfos() {
     );
   }
 
-  // If no vendor data is available but we're not in an error state, show skeleton instead of error
+  
   if (!vendor && !isLoading) {
     return <ProfileSkeleton />;
   }
@@ -97,7 +97,7 @@ export function ProfileBasicInfos() {
     <div className="w-full">
       <div className="flex items-center gap-x-1">
         <User size={15} color="#6A6B72" />
-        <span className="text-sm text-[#6A6B72]">Vendor</span>
+        <span className="text-sm text-[#6A6B72]">Supplier</span>
       </div>
 
       {/* PROFILE IMAGE AND NAME */}

@@ -67,7 +67,7 @@ const Home = () => {
           </span>
         </div>
         <div
-          onClick={() => router.push("/dashboard/add-product")}
+          onClick={() => router.push("/dashboard/products/add-product")}
           className="  w-fit"
         >
           <Button asChild>

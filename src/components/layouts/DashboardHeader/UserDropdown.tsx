@@ -35,9 +35,14 @@ export const UserDropdown = () => {
       <DropdownMenuContent className="mr-[4rem] w-[14rem]">
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>Profile</DropdownMenuItem>
+        <Link href='/dashboard/settings'>
+          <DropdownMenuItem>Profile</DropdownMenuItem>
+        </Link>
         <Link href="/dashboard/wallets">
           <DropdownMenuItem>Wallets</DropdownMenuItem>
+        </Link>
+        <Link href="/dashboard/support">
+          <DropdownMenuItem>Support</DropdownMenuItem>
         </Link>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => signOut()}>Sign Out</DropdownMenuItem>

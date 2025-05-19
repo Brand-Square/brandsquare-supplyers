@@ -49,7 +49,7 @@ const HelpBanner = ({ title, text, img, route }: { title: string, text: string, 
                 </div>
                 <div className='max-w-[100px] sm:max-w-[200px]'>
                   <DashBtn 
-                    styling='border-theme-text-gray bg-theme-blue border text-theme-text-gray' 
+                    styling='border-theme-text-gray bg-theme-blue border text-theme-text-gray ' 
                     text='Access Support' 
                     onClick={handleSupportClick} 
                   />

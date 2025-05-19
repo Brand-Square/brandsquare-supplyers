@@ -7,8 +7,8 @@ const getToken = () => {
 
 // Create an axios instance with a default header
 const axiosInstance = axios.create({
-  // baseURL: "https://api.brandsquare.store/api",
-  baseURL: "http://localhost:8080/api", 
+  baseURL: "https://api.brandsquare.store/api",
+  // baseURL: "http://localhost:8080/api", 
   headers: {
     'Content-Type': 'application/json',
   },

@@ -6,10 +6,10 @@ import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.share
 import axiosInstance from "../api/axiosClient";
 
 enum API_URL {
-  BASE = "http://localhost:8080/api/auth",
-  BASE1 = "http://localhost:8080/api",
-  // BASE = "https://api.brandsquare.store/api/auth",
-  // BASE1 = "https://api.brandsquare.store/api",
+  // BASE = "http://localhost:8080/api/auth",
+  // BASE1 = "http://localhost:8080/api",
+  BASE = "https://api.brandsquare.store/api/auth",
+  BASE1 = "https://api.brandsquare.store/api",
   LOGIN = "/login/",
   REGISTER = "/register/",
   VERIFY_OTP = "/verify-otp/",

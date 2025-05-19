@@ -22,6 +22,7 @@ import {
   useVendorProfile,
 } from "@/app/store/useVendorProductStore";
 import { toast } from "react-toastify";
+import { cleanImageUrl } from '@/lib/customHooks/useCleanImageUrl'
 import useInitAuthStore from "@/app/store/InitAuthStore";
 
 // Sample countries
@@ -81,6 +82,12 @@ export default function ProfileEditor() {
     if (vendorProfileData?.data) {
       const vendor = vendorProfileData.data;
 
+      const cleanedComplianceDocs = vendor.complianceDocument
+        ?.map(cleanImageUrl)
+        .filter(Boolean) as string[] || [];
+      setDocumentPreviews(cleanedComplianceDocs);
+
+
       setFormData({
         businessName: vendor.businessName || "",
         ownerName: vendor.ownerName || "",
@@ -93,12 +100,19 @@ export default function ProfileEditor() {
         state: vendor.location?.state || "",
         city: vendor.location?.city || "",
       });
+
+      if (vendor.logo) {
+        const cleanedLogo = cleanImageUrl(vendor.logo);
+        if (cleanedLogo) {
+          setLogoPreview(cleanedLogo);
+        }
+      }
     }
   }, [vendorProfileData]);
 
 
 
-  const { updateVendorProfile, isUpdateProfileLoading, refreshToken, } = useInitAuthStore();
+  const { updateVendorProfile, isUpdateProfileLoading, } = useInitAuthStore();
 
   // Handle input change
   const handleInputChange = (
@@ -109,7 +123,7 @@ export default function ProfileEditor() {
   };
 
 
-    // Handle logo upload
+  // Handle logo upload
   const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
@@ -148,7 +162,7 @@ export default function ProfileEditor() {
     }
   };
 
-    // Remove compliance document
+  // Remove compliance document
   const removeDocument = (index: number) => {
     setComplianceDocuments((prev) => prev.filter((_, i) => i !== index));
     setDocumentPreviews((prev) => prev.filter((_, i) => i !== index));
@@ -156,10 +170,46 @@ export default function ProfileEditor() {
 
 
 
+
+  const isFormValid = () => {
+    // Required fields validation
+    const requiredFieldsValid =
+      formData.businessName.trim() !== "" &&
+      formData.ownerName.trim() !== "" &&
+      formData.phoneNumber.trim() !== "" &&
+      formData.businessType.trim() !== "" &&
+      formData.businessAddress.trim() !== "" &&
+      formData.country.trim() !== "" &&
+      formData.state.trim() !== "" &&
+      formData.city.trim() !== "";
+
+    // Phone number validation (basic - at least 6 digits)
+    const phoneRegex = /\d{6,}/;
+    const phoneValid = phoneRegex.test(formData.phoneNumber);
+
+    // Business registration number validation (if provided)
+    const registrationValid =
+      formData.businessRegistrationNumber.trim() === "" ||
+      formData.businessRegistrationNumber.trim().length >= 6;
+
+    // Tax ID validation (if provided)
+    const taxIdValid =
+      formData.taxIdentificationNumber.trim() === "" ||
+      formData.taxIdentificationNumber.trim().length >= 6;
+
+    return (
+      requiredFieldsValid &&
+      phoneValid &&
+      registrationValid &&
+      taxIdValid
+    );
+  };
+
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Upload logo if exists
+
     let logoUrl = "";
     if (logo) {
       try {
@@ -174,12 +224,17 @@ export default function ProfileEditor() {
       }
     }
 
-    // Upload compliance documents if any
-    let complianceDocUrls: string[] = [];
+
+    const existingDocumentUrls = documentPreviews
+      .filter(preview => preview.startsWith('http'))
+      .map(url => cleanImageUrl(url))
+      .filter(Boolean) as string[];
+
+    let newDocumentUrls: string[] = [];
     if (complianceDocuments.length > 0) {
       try {
         const docsRes = await uploadImage(complianceDocuments);
-        complianceDocUrls = (docsRes?.files || []).map(
+        newDocumentUrls = (docsRes?.files || []).map(
           (f: { publicUrl: string }) => f.publicUrl
         );
       } catch (err) {
@@ -189,7 +244,10 @@ export default function ProfileEditor() {
       }
     }
 
-    // Prepare data for updateVendorProfile
+
+    const allDocumentUrls = [...existingDocumentUrls, ...newDocumentUrls];
+
+
     const updateData = {
       businessName: formData.businessName,
       ownerName: formData.ownerName,
@@ -206,8 +264,8 @@ export default function ProfileEditor() {
         state: formData.state,
         city: formData.city,
       },
-      logo: logoUrl || undefined,
-      complianceDocument: complianceDocUrls || undefined,
+      logo: logoUrl || vendorProfileData?.data?.logo || undefined,
+      complianceDocument: allDocumentUrls.length > 0 ? allDocumentUrls : undefined,
       notificationPreferences: {
         salesAlert: notificationPreferences.salesAlert,
         promotions: notificationPreferences.promotions,
@@ -216,7 +274,6 @@ export default function ProfileEditor() {
 
     try {
       await updateVendorProfile(updateData);
-      await refreshToken();
       toast.success("Profile updated successfully!");
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -322,7 +379,7 @@ export default function ProfileEditor() {
                       <div className="flex flex-col items-center justify-center">
                         <div className="relative mb-2 w-20 h-20">
                           <Image
-                            src={logoPreview || "/placeholder.svg"}
+                            src={logoPreview}
                             alt="Logo Preview"
                             fill
                             className="object-contain"
@@ -623,7 +680,7 @@ export default function ProfileEditor() {
                 <Button
                   type="submit"
                   className="bg-navy-blue hover:bg-navy-blue/90"
-                  disabled={isUpdateProfileLoading}
+                  disabled={isUpdateProfileLoading || !isFormValid()}
                 >
                   {isUpdateProfileLoading ? "Saving..." : "Save Changes"}
                 </Button>
@@ -907,7 +964,7 @@ export default function ProfileEditor() {
                   {/* Document Previews */}
                   {documentPreviews.length > 0 && (
                     <div className="grid grid-cols-4 gap-4 mb-4">
-                      {documentPreviews.map((preview, index) => (
+                      {/* {documentPreviews.map((preview, index) => (
                         <Card key={index} className="overflow-hidden">
                           <CardContent className="p-2">
                             <div className="relative h-32 mb-2">
@@ -928,6 +985,31 @@ export default function ProfileEditor() {
                             </button>
                           </CardContent>
                         </Card>
+                      ))} */}
+
+                      {documentPreviews.map((preview, index) => (
+                        preview ? (
+                          <Card key={index} className="overflow-hidden">
+                            <CardContent className="p-2">
+                              <div className="relative h-24 mb-2">
+                                <Image
+                                  src={preview}
+                                  alt={`Document ${index + 1}`}
+                                  fill
+                                  className="object-cover"
+                                />
+                              </div>
+                              <button
+                                type="button"
+                                onClick={() => removeDocument(index)}
+                                className="w-full flex items-center justify-center text-red-500 text-sm"
+                              >
+                                <Trash2 className="w-3 h-3 mr-1" />
+                                Remove
+                              </button>
+                            </CardContent>
+                          </Card>
+                        ) : null
                       ))}
                     </div>
                   )}
@@ -1015,7 +1097,7 @@ export default function ProfileEditor() {
                 <Button
                   type="submit"
                   className="bg-blue-900 hover:bg-blue-900/90"
-                  disabled={isUpdateProfileLoading}
+                  disabled={isUpdateProfileLoading || !isFormValid()}
                 >
                   {isUpdateProfileLoading ? "Saving..." : "Save Changes"}
                 </Button>

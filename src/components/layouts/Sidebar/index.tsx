@@ -4,7 +4,7 @@ import Image from "next/image";
 import React from "react";
 import HomeIcon from "../../../../public/assets/icons/homeIcon";
 import { Wallet } from "lucide-react";
-import CustomerIcon from "../../../../public/assets/icons/cutomerIcon";
+// import CustomerIcon from "../../../../public/assets/icons/cutomerIcon";
 import ProductIcon from "../../../../public/assets/icons/productIcon";
 // import PaymentIcon from "../../../../public/assets/icons/paymentIcon";
 // import MarketingIcon from "../../../../public/assets/icons/marketingIcon";
@@ -200,7 +200,7 @@ export const SideBar = () => {
           <SettingIcon />
           {collapseSidebar ? "" : "Setting"}
         </Link>
-        <Link
+        {/* <Link
           href="/dashboard/support"
           className={cn(
             "",
@@ -212,7 +212,7 @@ export const SideBar = () => {
         >
           <CustomerIcon />
           {collapseSidebar ? "" : "support"}
-        </Link>
+        </Link> */}
       </div>
     </div>
   );

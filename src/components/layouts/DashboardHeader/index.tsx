@@ -2,9 +2,9 @@
 import { Search, Menu } from "lucide-react";
 import { Button } from "../../ui/button";
 import Link from "next/link";
-import QuestionMark from "../../../../public/assets/icons/questionMarkIcon";
+// import QuestionMark from "../../../../public/assets/icons/questionMarkIcon";
 import { PrintIcon } from "../../../../public/assets/icons/PrintIcon";
-import { NotificationIcon } from "../../../../public/assets/icons/NotificationIcon";
+// import { NotificationIcon } from "../../../../public/assets/icons/NotificationIcon";
 
 import { UserDropdown } from "./UserDropdown";
 
@@ -24,12 +24,12 @@ export const DashboardHeader = () => {
         <Menu size={30} color="#6A6B72" className="" />
       </div>
       <div className="flex items-center max-sm:gap-1 gap-x-4">
-        <Link
+        {/* <Link
           href={"/dashboard/support"}
           className="rounded-full bg-theme-blue grid place-items-center size-[1.8rem]"
         >
           <QuestionMark />
-        </Link>
+        </Link> */}
         <Button
           asChild
           size={"icon"}
@@ -40,7 +40,7 @@ export const DashboardHeader = () => {
             <PrintIcon />
           </Link>
         </Button>
-        <Button
+        {/* <Button
           asChild
           size={"icon"}
           variant={"ghost"}
@@ -49,7 +49,7 @@ export const DashboardHeader = () => {
           <Link href={"#"}>
             <NotificationIcon />
           </Link>
-        </Button>
+        </Button> */}
 
         <UserDropdown />
       </div>

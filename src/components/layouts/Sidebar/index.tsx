@@ -8,7 +8,7 @@ import CustomerIcon from "../../../../public/assets/icons/cutomerIcon";
 import ProductIcon from "../../../../public/assets/icons/productIcon";
 // import PaymentIcon from "../../../../public/assets/icons/paymentIcon";
 // import MarketingIcon from "../../../../public/assets/icons/marketingIcon";
-import OrdersIcon from "../../../../public/assets/icons/ordersIcon";
+// import OrdersIcon from "../../../../public/assets/icons/ordersIcon";
 import SettingIcon from "../../../../public/assets/icons/settingIcon";
 import ChevronLeftIcon from "../../../../public/assets/icons/chevronLeftIcon";
 import { AnimatePresence, motion } from "framer-motion";
@@ -99,7 +99,7 @@ export const SideBar = () => {
             {collapseSidebar ? "" : "Home"}
           </Link>
 
-          <Link
+          {/* <Link
             href="/dashboard/orders/customers-orders"
             className={cn(
               "",
@@ -111,7 +111,7 @@ export const SideBar = () => {
           >
             <OrdersIcon />
             {collapseSidebar ? "" : "Customers orders"}
-          </Link>
+          </Link> */}
 
           {/* <SidebarAccordion
             triggerHeading="Orders"

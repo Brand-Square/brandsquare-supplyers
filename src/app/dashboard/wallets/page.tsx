@@ -1,5 +1,5 @@
 // page.tsx
-'use client'
+'use client';
 
 import { PrimaryHeading } from "@/components/ui/PrimaryHeading";
 import { SectionSubtitle } from "@/components/ui/SectionSubtitle";
@@ -8,32 +8,60 @@ import FilterBtnComp from "../../../components/ui/Filterwallets";
 import WalletTable from "@/components/ui/walletTable";
 import { TableEmptyState } from "@/components/ui/TableEmptyState";
 import { useState } from "react";
-import { useVendorWalletStats } from "@/app/api/api-data/useWallets"; 
+import useVendorProductStore, { SupplierTransaction } from "@/app/store/useVendorProductStore";
 
-type Transaction = {
-  status: 'pending' | 'completed' | 'failed';
-};
+interface Transaction {
+  transactionId: string;
+  _id: string;
+  percentage_paid: number;
+  amount_received: number;
+  supplierId: string;
+  amount: number;
+  type: string;
+  from: string;
+  description: string;
+  reference: string;
+  status: string;
+  date: string;
+  createdAt: string;
+  updatedAt: string;
+}
 
 const Payout = () => {
   const [statusFilter, setStatusFilter] = useState<'pending' | 'completed' | 'failed' | 'all'>('all');
+
+
+  const { useSupplierTransactions } = useVendorProductStore();
+  const { data: transactionsResponse, isLoading } = useSupplierTransactions();
+
   
-  const { data: walletData, isLoading } = useVendorWalletStats();
+  const supplierTransactions = transactionsResponse?.data || [];
+
   
-  const filteredTransactions = walletData?.data?.transactions?.filter((transaction: Transaction) => 
-    statusFilter === 'all' || transaction.status === statusFilter
-  ) || [];
+  const filteredTransactions: Transaction[] = supplierTransactions
+    .filter((transaction) => statusFilter === 'all' || transaction.status === statusFilter)
+    .map((transaction: SupplierTransaction) => ({
+      ...transaction,
+      transactionId: transaction._id, 
+    }));
+
+  
+  const availableBalance = 0;
+  const pendingBalance = 0; 
+  const totalBalance = 0; 
+  const currency = "Yuan"; 
 
   return (
     <div className="space-y-6">
-      <PrimaryHeading text="Wallets" />
-      <SectionSubtitle text="Manage your transactions from here" />
+      <PrimaryHeading text="Payments" />
+      <SectionSubtitle text="Manage your transactions with Brandsquare from here" />
 
       <div className="mt-4">
-        <StatCards 
-          availableBalance={walletData?.data?.available_balance}
-          pendingBalance={walletData?.data?.pending_balance}
-          totalBalance={walletData?.data?.totalBalance}
-          currency={walletData?.data?.currency}
+        <StatCards
+          availableBalance={availableBalance}
+          pendingBalance={pendingBalance}
+          totalBalance={totalBalance}
+          currency={currency}
         />
       </div>
 
@@ -44,7 +72,9 @@ const Payout = () => {
         </div>
 
         <div className={filteredTransactions.length === 0 ? 'min-h-[456px] flex items-center justify-center' : ''}>
-          {!isLoading && filteredTransactions.length > 0 ? (
+          {isLoading ? (
+            <div>Loading transactions...</div>
+          ) : filteredTransactions.length > 0 ? (
             <div className="py-4">
               <WalletTable transactions={filteredTransactions} />
             </div>

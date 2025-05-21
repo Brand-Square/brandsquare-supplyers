@@ -178,7 +178,7 @@ export const SideBar = () => {
             )}
           >
             <Wallet />
-            {collapseSidebar ? "" : "wallets"}
+            {collapseSidebar ? "" : "Payments"}
           </Link>
 
         </nav>

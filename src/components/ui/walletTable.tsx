@@ -8,15 +8,25 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { ProgressButton } from '../../app/dashboard/wallets/ProgressBtn'
 import { formatDate } from '@/lib/utils';
+import { useRouter } from "next/navigation";
 
 interface Transaction {
     transactionId: string;
     amount: number;
-    type: 'credit' | 'debit';
     date: string;
-    status: 'pending' | 'completed' | 'failed';
     _id: string;
+    percentage_paid: number;
+    amount_received: number;
+    supplierId: string;
+    type: string;
+    from: string;
+    description: string;
+    reference: string;
+    status: string;
+    createdAt: string;
+    updatedAt: string;
 }
 
 interface WalletTableProps {
@@ -24,6 +34,11 @@ interface WalletTableProps {
 }
 
 const WalletTable = ({ transactions }: WalletTableProps) => {
+    const router = useRouter();
+
+    const handleViewDetails = (transactionId: string) => {
+        router.push(`/dashboard/wallets/${transactionId}/`);
+    };
     return (
         <div className="w-full">
             <div className="relative overflow-x-auto">
@@ -32,7 +47,7 @@ const WalletTable = ({ transactions }: WalletTableProps) => {
                         <tr>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 <div className="flex items-center gap-1">
-                                    Payment ID
+                                    Payment Date
                                     <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
                                         <ArrowUpDown className="h-4 w-4" />
                                     </Button>
@@ -41,9 +56,12 @@ const WalletTable = ({ transactions }: WalletTableProps) => {
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Amount
                             </th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                From
+                            </th>
 
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Status
+                                Paid status
                             </th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Actions
@@ -56,23 +74,30 @@ const WalletTable = ({ transactions }: WalletTableProps) => {
                                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                                     <div className='flex flex-col'>
                                         <span>{transaction.transactionId}</span>
-                                       <span>{formatDate(transaction.date)}</span>
+                                        <span>{formatDate(transaction.date)}</span>
                                     </div>
 
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                     {transaction.amount.toLocaleString('en-NG')}
                                 </td>
-
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                    {transaction.from}
+                                </td>
 
                                 <td className="px-6 py-4 whitespace-nowrap text-sm">
+                                    <span>
+                                        <ProgressButton value={transaction.percentage_paid} />
+                                    </span>
+                                </td>
+                                {/* <td className="px-6 py-4 whitespace-nowrap text-sm">
                                     <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
                     ${transaction.status === 'completed' ? 'bg-green-100 text-green-800' :
                                             transaction.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
                                                 'bg-red-100 text-red-800'}`}>
                                         {transaction.status.charAt(0).toUpperCase() + transaction.status.slice(1)}
                                     </span>
-                                </td>
+                                </td> */}
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                     <DropdownMenu>
                                         <DropdownMenuTrigger asChild>
@@ -81,7 +106,9 @@ const WalletTable = ({ transactions }: WalletTableProps) => {
                                             </Button>
                                         </DropdownMenuTrigger>
                                         <DropdownMenuContent align="end">
-                                            <DropdownMenuItem>View Details</DropdownMenuItem>
+                                            <DropdownMenuItem
+                                                onClick={() => handleViewDetails(transaction._id)}
+                                            >View Details</DropdownMenuItem>
                                             <DropdownMenuItem>Download Receipt</DropdownMenuItem>
                                         </DropdownMenuContent>
                                     </DropdownMenu>

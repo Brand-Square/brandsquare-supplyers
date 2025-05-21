@@ -1,11 +1,9 @@
-
-"use client"
+"use client";
 import { create } from "zustand";
 import { useQuery } from "@tanstack/react-query";
 import { jwtDecode } from "jwt-decode";
 import axiosInstance from "@/app/api/axiosClient";
 import { useEffect, useState } from "react";
-
 
 export type VariantProperty = {
   key: string;
@@ -106,22 +104,41 @@ export interface NewCustomersByMonth {
   customers: number;
 }
 
+export interface SupplierTransaction {
+  percentage_paid: number;
+  amount_received: number;
+  _id: string;
+  supplierId: string;
+  amount: number;
+  type: string;
+  from: string;
+  description: string;
+  reference: string;
+  status: string;
+  date: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface SupplierTransactionsResponse {
+  success: boolean;
+  data: SupplierTransaction[];
+}
+
 interface DecodedToken {
   userId: string;
 }
 
 // Fetch vendor analytics data
 export const useVendorAnalyticsData = () => {
-
   const [token, setToken] = useState<string | null>(null);
 
   useEffect(() => {
     // Only access localStorage on the client side
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       setToken(localStorage.getItem("token"));
     }
   }, []);
-
 
   return useQuery<VendorAnalyticsData>({
     queryKey: ["vendor-analytics", token],
@@ -130,18 +147,17 @@ export const useVendorAnalyticsData = () => {
         throw new Error("Token not found. Please log in.");
       }
 
-
       try {
         const decodedToken = jwtDecode<DecodedToken>(token);
         const vendorId = decodedToken.userId;
-
 
         if (!vendorId) {
           throw new Error("Vendor ID not found in token.");
         }
 
-
-        const response = await axiosInstance.get(`/analytics/vendor/${vendorId}`);
+        const response = await axiosInstance.get(
+          `/analytics/vendor/${vendorId}`
+        );
 
         return response.data;
       } catch (error: unknown) {
@@ -159,30 +175,34 @@ export const useVendorAnalyticsData = () => {
 
 // Helper functions to transform data for charts
 export const transformSalesOverTimeData = (data: SalesOverTime[] = []) => {
-  return data.map(item => ({
+  return data.map((item) => ({
     name: item.month,
-    val: item.sales
+    val: item.sales,
   }));
 };
 
-export const transformBestSellingProductsData = (data: BestSellingProduct[] = []) => {
-  return data.map(item => ({
+export const transformBestSellingProductsData = (
+  data: BestSellingProduct[] = []
+) => {
+  return data.map((item) => ({
     name: item.productName,
-    value: item.revenue
+    value: item.revenue,
   }));
 };
 
-export const transformProductPerformanceData = (data: ProductPerformance[] = []) => {
-  return data.map(item => ({
+export const transformProductPerformanceData = (
+  data: ProductPerformance[] = []
+) => {
+  return data.map((item) => ({
     name: item.month,
-    [item.productName]: item.sales
+    [item.productName]: item.sales,
   }));
 };
 
 export const transformNewCustomersData = (data: NewCustomersByMonth[] = []) => {
-  return data.map(item => ({
+  return data.map((item) => ({
     name: item.month,
-    val: item.customers
+    val: item.customers,
   }));
 };
 
@@ -208,7 +228,7 @@ export const uploadImage = async (
   subfolder: string = "compliance_docs"
 ): Promise<UploadImageResponse> => {
   const formData = new FormData();
-  files.forEach(file => {
+  files.forEach((file) => {
     formData.append("files", file);
   });
 
@@ -237,7 +257,9 @@ export const useCategories = (
     queryKey: ["categories", { search, sortBy, page, limit }],
     queryFn: async () => {
       const response = await axiosInstance.get(
-        `/categories/?search=${encodeURIComponent(search)}&sortBy=${encodeURIComponent(sortBy)}&page=${page}&limit=${limit}`
+        `/categories/?search=${encodeURIComponent(
+          search
+        )}&sortBy=${encodeURIComponent(sortBy)}&page=${page}&limit=${limit}`
       );
       return response.data;
     },
@@ -268,7 +290,7 @@ export const useMyCustomers = () => {
 
   useEffect(() => {
     // Only access localStorage on the client side
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       setToken(localStorage.getItem("token"));
     }
   }, []);
@@ -288,7 +310,9 @@ export const useMyCustomers = () => {
           throw new Error("Vendor ID not found in token.");
         }
 
-        const response = await axiosInstance.get(`/vendor-user/${vendorId}/customers`);
+        const response = await axiosInstance.get(
+          `/vendor-user/${vendorId}/customers`
+        );
         return response.data;
       } catch (error: unknown) {
         console.error("Error decoding token or fetching data:", error);
@@ -300,7 +324,6 @@ export const useMyCustomers = () => {
     enabled: !!token,
   });
 };
-
 
 //fetch vendor profile
 export interface VendorProfile {
@@ -360,7 +383,7 @@ export const useVendorProfile = () => {
 
   useEffect(() => {
     // Only access localStorage on the client side
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       setToken(localStorage.getItem("token"));
     }
   }, []);
@@ -382,14 +405,16 @@ export const useVendorProfile = () => {
         const userData = JSON.parse(storedData);
         const supplierId = userData?._id || userData?.userDetails?.id;
 
-        console.log('supplierId', supplierId);
+        console.log("supplierId", supplierId);
 
         if (!supplierId) {
           throw new Error("Supplier ID not found in user details.");
         }
 
         // Make API call with the correct supplier ID
-        const response = await axiosInstance.get(`/supplier-user/${supplierId}/info`);
+        const response = await axiosInstance.get(
+          `/supplier-user/${supplierId}/info`
+        );
         return response.data;
       } catch (error: unknown) {
         console.error("Error fetching supplier data:", error);
@@ -419,7 +444,7 @@ export const useMyOrdersQuery = () => {
     queryKey: ["myOrders"],
     queryFn: async () => {
       try {
-        const response = await axiosInstance.get('/orders/my');
+        const response = await axiosInstance.get("/orders/my");
         return response.data;
       } catch (error) {
         console.error("Error fetching orders:", error);
@@ -431,13 +456,96 @@ export const useMyOrdersQuery = () => {
   });
 };
 
+export const useSupplierTransactions = () => {
+  const [token, setToken] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setToken(localStorage.getItem("token"));
+    }
+  }, []);
+
+  return useQuery<SupplierTransactionsResponse>({
+    queryKey: ["supplier-transactions", token],
+    queryFn: async () => {
+      if (!token) {
+        throw new Error("Token not found. Please log in.");
+      }
+
+      try {
+        const decodedToken = jwtDecode<DecodedToken>(token);
+        const supplierId = decodedToken.userId;
+
+        if (!supplierId) {
+          throw new Error("Supplier ID not found in token.");
+        }
+
+        const response = await axiosInstance.get(
+          `/supplier-transactions/supplier/${supplierId}`
+        );
+        return response.data;
+      } catch (error: unknown) {
+        console.error("Error fetching supplier transactions:", error);
+        throw new Error("Failed to fetch supplier transactions.");
+      }
+    },
+    staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    enabled: !!token,
+  });
+};
+
+
+// Add this to your existing store file
+
+export const useSingleTransaction = (transactionId: string) => {
+  const [token, setToken] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setToken(localStorage.getItem("token"));
+    }
+  }, []);
+
+  return useQuery<SupplierTransaction>({
+    queryKey: ["single-transaction", transactionId, token],
+    queryFn: async () => {
+      if (!token) {
+        throw new Error("Token not found. Please log in.");
+      }
+
+      if (!transactionId) {
+        throw new Error("Transaction ID is required.");
+      }
+
+      try {
+        const response = await axiosInstance.get(
+          `/supplier-transactions/${transactionId}`
+        );
+        return response.data.data; 
+      } catch (error: unknown) {
+        console.error("Error fetching transaction:", error);
+        throw new Error("Failed to fetch transaction.");
+      }
+    },
+    staleTime: 5 * 60 * 1000, 
+    refetchOnWindowFocus: false,
+    enabled: !!token && !!transactionId, 
+  });
+};
+
 interface VendorProductState {
   useMyOrders: () => ReturnType<typeof useMyOrdersQuery>;
+  useSupplierTransactions: () => ReturnType<typeof useSupplierTransactions>;
 }
 
 const useVendorProductStore = create<VendorProductState>()(() => ({
   useMyOrders: () => {
     return useMyOrdersQuery();
+  },
+
+  useSupplierTransactions: () => {
+    return useSupplierTransactions();
   },
 }));
 

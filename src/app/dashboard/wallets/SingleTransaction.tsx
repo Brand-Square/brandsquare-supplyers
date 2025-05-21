@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
 import { SupplierTransaction } from "@/app/store/useVendorProductStore";
+import chineseyuan from "../../../../public/assets/images/chineseyuan.png";
+import Image from "next/image";
 
 const SingleTransaction = ({ transaction }: { transaction: SupplierTransaction }) => {
   return (
@@ -29,9 +31,17 @@ const SingleTransaction = ({ transaction }: { transaction: SupplierTransaction }
             <span className="text-[14px] text-[#6A6B72]">
               Transaction Amount
             </span>
-            <p className="text-[20px] text-[#2A2B2D] font-semibold">
-              NGN {transaction.amount.toLocaleString("en-NG")}
-            </p>
+
+            <div className="flex items">
+              <Image src={chineseyuan}
+                alt="Chinese Yuan"
+                width={20}
+                height={20}
+              />
+              <p className="text-[20px] text-[#2A2B2D] font-semibold">
+                {transaction.amount.toLocaleString("en-NG")}
+              </p>
+            </div>
           </div>
           <div>
             <span className="text-[14px] text-[#6A6B72]">
@@ -86,9 +96,17 @@ const SingleTransaction = ({ transaction }: { transaction: SupplierTransaction }
             <span className="text-[14px] text-[#6A6B72]">
               Amount received by supplier
             </span>
-            <p className="text-[20px] text-[#2A2B2D] font-semibold">
-              {transaction.amount_received || "N/A"}
-            </p>
+
+            <div className="flex items-center">
+              <Image src={chineseyuan}
+                alt="Chinese Yuan"
+                width={20}
+                height={20}
+              />
+              <p className="text-[20px] text-[#2A2B2D] font-semibold">
+                {transaction.amount_received.toLocaleString("en-NG") || "N/A"}
+              </p>
+            </div>
           </div>
         </div>
 

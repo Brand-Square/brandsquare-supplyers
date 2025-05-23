@@ -34,22 +34,37 @@ const Payout = () => {
   const { useSupplierTransactions } = useVendorProductStore();
   const { data: transactionsResponse, isLoading } = useSupplierTransactions();
 
-  
+
   const supplierTransactions = transactionsResponse?.data || [];
 
-  
+
   const filteredTransactions: Transaction[] = supplierTransactions
     .filter((transaction) => statusFilter === 'all' || transaction.status === statusFilter)
     .map((transaction: SupplierTransaction) => ({
       ...transaction,
-      transactionId: transaction._id, 
+      transactionId: transaction._id,
     }));
 
+
+
+
+  const totalUncompletedTransactions = supplierTransactions.filter(
+    (transaction: SupplierTransaction) => transaction.percentage_paid < 100
+  ).length;
+
+  const totalCompletedTransactions = supplierTransactions.filter(
+    (transaction: SupplierTransaction) => transaction.percentage_paid === 100
+  ).length;
+
+  const totalAmountReceived = supplierTransactions.reduce(
+    (sum: number, transaction: SupplierTransaction) => sum + (transaction.amount_received || 0),
+    0
+  );
+
+
+
   
-  const availableBalance = 0;
-  const pendingBalance = 0; 
-  const totalBalance = 0; 
-  const currency = "Yuan"; 
+  const currency = "Yuan";
 
   return (
     <div className="space-y-6">
@@ -58,9 +73,9 @@ const Payout = () => {
 
       <div className="mt-4">
         <StatCards
-          availableBalance={availableBalance}
-          pendingBalance={pendingBalance}
-          totalBalance={totalBalance}
+          totalAmountReceived={totalAmountReceived}
+          totalUncompletedTransactions={totalUncompletedTransactions}
+          totalCompletedTransactions={totalCompletedTransactions}
           currency={currency}
         />
       </div>

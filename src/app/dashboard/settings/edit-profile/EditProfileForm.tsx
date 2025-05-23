@@ -56,10 +56,14 @@ export default function ProfileEditor() {
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const [complianceDocuments, setComplianceDocuments] = useState<File[]>([]);
   const [documentPreviews, setDocumentPreviews] = useState<string[]>([]);
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [notificationPreferences, setNotificationPreferences] = useState({
     salesAlert: true,
     promotions: true,
   });
+
+
+
   // Form data
   const [formData, setFormData] = useState({
     businessName: "",
@@ -206,9 +210,91 @@ export default function ProfileEditor() {
   };
 
 
+  // const handleSubmit = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+
+
+  //   let logoUrl = "";
+  //   if (logo) {
+  //     try {
+  //       const logoRes = await uploadImage([logo]);
+  //       if (logoRes?.files?.[0]?.publicUrl) {
+  //         logoUrl = logoRes.files[0].publicUrl;
+  //       }
+  //     } catch (err) {
+  //       console.log(err);
+  //       toast.error("Failed to upload logo.");
+  //       return;
+  //     }
+  //   }
+
+
+  //   const existingDocumentUrls = documentPreviews
+  //     .filter(preview => preview.startsWith('http'))
+  //     .map(url => cleanImageUrl(url))
+  //     .filter(Boolean) as string[];
+
+  //   let newDocumentUrls: string[] = [];
+  //   if (complianceDocuments.length > 0) {
+  //     try {
+  //       const docsRes = await uploadImage(complianceDocuments);
+  //       newDocumentUrls = (docsRes?.files || []).map(
+  //         (f: { publicUrl: string }) => f.publicUrl
+  //       );
+  //     } catch (err) {
+  //       console.log(err);
+  //       toast.error("Failed to upload compliance documents.");
+  //       return;
+  //     }
+  //   }
+
+
+  //   const allDocumentUrls = [...existingDocumentUrls, ...newDocumentUrls];
+
+
+  //   const updateData = {
+  //     businessName: formData.businessName,
+  //     ownerName: formData.ownerName,
+  //     phoneNumber: formData.phoneNumber,
+  //     businessType: formData.businessType as
+  //       | "limitedLiability"
+  //       | "partnership"
+  //       | "soleProprietorship",
+  //     taxIdentificationNumber: formData.taxIdentificationNumber,
+  //     businessRegistrationNumber: formData.businessRegistrationNumber,
+  //     businessAddress: formData.businessAddress,
+  //     location: {
+  //       country: formData.country,
+  //       state: formData.state,
+  //       city: formData.city,
+  //     },
+  //     logo: logoUrl || vendorProfileData?.data?.logo || undefined,
+  //     complianceDocument: allDocumentUrls.length > 0 ? allDocumentUrls : undefined,
+  //     notificationPreferences: {
+  //       salesAlert: notificationPreferences.salesAlert,
+  //       promotions: notificationPreferences.promotions,
+  //     },
+  //   };
+
+  //   try {
+  //     await updateVendorProfile(updateData);
+  //     toast.success("Profile updated successfully!");
+  //   } catch (error: unknown) {
+  //     if (error instanceof Error) {
+  //       toast.error(
+  //         error.message || "Failed to update profile. Please try again."
+  //       );
+  //     } else {
+  //       toast.error("Failed to update profile. Please try again.");
+  //     }
+  //   }
+  // };
+
+  // Handle client-side rendering
+
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
 
     let logoUrl = "";
     if (logo) {
@@ -223,7 +309,6 @@ export default function ProfileEditor() {
         return;
       }
     }
-
 
     const existingDocumentUrls = documentPreviews
       .filter(preview => preview.startsWith('http'))
@@ -244,9 +329,7 @@ export default function ProfileEditor() {
       }
     }
 
-
     const allDocumentUrls = [...existingDocumentUrls, ...newDocumentUrls];
-
 
     const updateData = {
       businessName: formData.businessName,
@@ -273,8 +356,12 @@ export default function ProfileEditor() {
     };
 
     try {
-      await updateVendorProfile(updateData);
+      const response = await updateVendorProfile(updateData);
       toast.success("Profile updated successfully!");
+
+      if (response?.data?.isProfileComplete) {
+        setShowSuccessMessage(true);
+      }
     } catch (error: unknown) {
       if (error instanceof Error) {
         toast.error(
@@ -286,7 +373,6 @@ export default function ProfileEditor() {
     }
   };
 
-  // Handle client-side rendering
   useEffect(() => {
     setMounted(true);
     const checkIfMobile = () => {
@@ -300,6 +386,45 @@ export default function ProfileEditor() {
       window.removeEventListener("resize", checkIfMobile);
     };
   }, []);
+
+// TODO:this is the success message
+  if (showSuccessMessage) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen p-4 text-center bg-white">
+        <div className="max-w-md mx-auto">
+          <div className="mb-6">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-16 w-16 text-green-500 mx-auto"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M5 13l4 4L19 7"
+              />
+            </svg>
+          </div>
+          <h1 className="text-2xl font-bold text-gray-800 mb-4">
+            Congratulations!
+          </h1>
+          <p className="text-gray-600 mb-6">
+            Your business information has been submitted successfully and is under review.
+            Once approved, you will receive an email that permits you to start uploading
+            your products and manage your business through dashboard.
+          </p>
+          <Link href="/dashboard">
+            <Button className="bg-blue-900 hover:bg-blue-900/90">
+              Return to Dashboard
+            </Button>
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   // Don't render anything until client-side hydration is complete
   if (!mounted) {

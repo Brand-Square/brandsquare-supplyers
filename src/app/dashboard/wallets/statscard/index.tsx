@@ -4,24 +4,24 @@ import { StatsCard } from "@/components/ui/WalletStatsCard";
 import PaymentIcon from "../../../../../public/assets/icons/paymentIcon";
 
 interface StatCardsProps {
-  availableBalance?: number;
-  pendingBalance?: number;
-  totalBalance?: number;
   currency?: string;
+  totalCompletedTransactions?: number;
+  totalUncompletedTransactions?: number;
+  totalAmountReceived?: number;
 }
 
 export const StatCards = ({
-  availableBalance = 0,
-  pendingBalance = 0,
-  totalBalance = 0,
-  currency = 'NGN'
+  totalAmountReceived, 
+ totalUncompletedTransactions,
+  totalCompletedTransactions,
+   currency
 }: StatCardsProps) => {
   return (
     <div className="grid sm:grid-cols-3 gap-3.5">
       <StatsCard
         icon={<PaymentIcon />}
         title="Available Balance"
-        value={`${availableBalance} ${currency}`}
+        value={`${totalAmountReceived?.toLocaleString('en-us')} ${currency}`}
         info="Amount currently available for withdrawal"
         showActionTop={false}
         actionText="Withdraw"
@@ -29,16 +29,16 @@ export const StatCards = ({
       <StatsCard
         icon={<PaymentIcon />}
         title="Pending balance"
-        value={`${pendingBalance} ${currency}`}
-        info="Amount awaiting clearance"
+        value={`${totalUncompletedTransactions}`}
+        info="Total numbers of Uncompleted payments"
         showActionTop={false}
         actionText="April 16, 2025"
       />
       <StatsCard
         icon={<PaymentIcon />}
-        title="Total Balance"
-        value={`${totalBalance} ${currency}`}
-        info="Sum of available and pending balances"
+        title="Completed Payment"
+        value={`${totalCompletedTransactions}`}
+        info="Total numbers of completed payments"
         showActionBottom={false}
         actionText="Withdraw"
 

@@ -6,38 +6,38 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 
 const Page = () => {
-  const [isProfileComplete, setIsProfileComplete] = useState<boolean | null>(null);
+  const [isVerifiedToUpload, setIsVerifiedToUpload] = useState<boolean | null>(null);
 
-useEffect(() => {
-  console.log('Checking profile completion status...');
-  const storedUser = localStorage.getItem("vendorDetails"); 
- 
-  if (storedUser) {
-    try {
-      const userData = JSON.parse(storedUser);
-      console.log('Parsed userData:', userData);
+  useEffect(() => {
+    console.log('Checking verification status...');
+    const storedUser = localStorage.getItem("vendorDetails"); 
+    
+    if (storedUser) {
+      try {
+        const userData = JSON.parse(storedUser);
+        console.log('Parsed userData:', userData);
+        
       
-     
-      const profileComplete = userData.isProfileComplete ?? 
-                           userData.data?.details?.isProfileComplete ?? 
-                           userData.details?.isProfileComplete ?? 
-                           false;
-      
-      console.log('Determined profileComplete:', profileComplete);
-      setIsProfileComplete(profileComplete);
-    } catch (error) {
-      console.error("Error parsing user data:", error);
-      setIsProfileComplete(false);
+        const verifiedToUpload = userData.isVerifiedByAdminToUpload ?? 
+                               userData.userDetails?.isVerifiedByAdminToUpload ?? 
+                               userData.data?.details?.isVerifiedByAdminToUpload ?? 
+                               userData.details?.isVerifiedByAdminToUpload ?? 
+                               false;
+        
+        console.log('Determined verifiedToUpload:', verifiedToUpload);
+        setIsVerifiedToUpload(verifiedToUpload);
+      } catch (error) {
+        console.error("Error parsing user data:", error);
+        setIsVerifiedToUpload(false);
+      }
+    } else {
+      console.log('No vendorDetails found in localStorage');
+      setIsVerifiedToUpload(false);
     }
-  } else {
-    console.log('No vendorDetails found in localStorage');
-    setIsProfileComplete(false);
-  }
-}, []);
+  }, []);
 
-
-  console.log('Rendering with isProfileComplete:', isProfileComplete);
-  if (isProfileComplete === null) {
+  console.log('Rendering with isVerifiedToUpload:', isVerifiedToUpload);
+  if (isVerifiedToUpload === null) {
     console.log('Showing loading state');
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -46,13 +46,16 @@ useEffect(() => {
     );
   }
 
-  if (!isProfileComplete) {
-    console.log('Showing profile incomplete block'); 
+  if (!isVerifiedToUpload) {
+    console.log('Showing not verified block'); 
     return (
       <div className="flex flex-col items-center justify-center min-h-screen text-center">
-        <PrimaryHeading text="Complete Your Profile" />
+        <PrimaryHeading text="Account Verification Required" />
         <p className="mt-4 text-lg text-gray-600">
-          You need to complete your supplier profile to add products.
+          Your account needs to be verified by admin before you can upload products.
+        </p>
+        <p className="mt-2 text-gray-500">
+          Please complete your profile and wait for admin verification.
         </p>
         <Link href="/dashboard/settings">
           <Button className="mt-6" variant="default">
@@ -63,7 +66,7 @@ useEffect(() => {
     );
   }
 
-  console.log('Showing product form (profile complete)'); 
+  console.log('Showing product form (verified)'); 
   return (
     <div>
       <div className="flex items-center justify-between mx-auto max-w-[60rem]">
